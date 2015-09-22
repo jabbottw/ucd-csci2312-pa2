@@ -123,7 +123,7 @@ namespace Clustering {
         }
     }
 
-    friend bool operator==(const Cluster &lhs, const Cluster &rhs){
+    bool operator==(const Cluster &lhs, const Cluster &rhs){
         LNodePtr lhsNodeCursor = lhs.points;
         LNodePtr rhsNodeCursor = rhs.points;
         if(lhs.size != rhs.size){
@@ -139,5 +139,6 @@ namespace Clustering {
                     }
                 }
         }
+        return false;
     }
 }
