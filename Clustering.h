@@ -51,6 +51,9 @@ namespace Clustering {
             //Cluster &operator+=(const Point &rhs); // add point
             //Cluster &operator-=(const Point &rhs); // remove point
 
+            // Friends
+            friend bool operator==(const Cluster &lhs, const Cluster &rhs);
+
     };
 }
 #endif //CLUSTERING_CLUSTER_H

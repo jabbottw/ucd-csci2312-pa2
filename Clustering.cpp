@@ -123,5 +123,21 @@ namespace Clustering {
         }
     }
 
-    //const PointPtr &remove(const PointPtr &);
+    friend bool operator==(const Cluster &lhs, const Cluster &rhs){
+        LNodePtr lhsNodeCursor = lhs.points;
+        LNodePtr rhsNodeCursor = rhs.points;
+        if(lhs.size != rhs.size){
+            return false;
+        } else {
+            bool equal = true;
+            while (equal)
+                for(int i = 0; i < lhs.size; i++) {
+                    for (int j = 0; j < rhs.size; j++) {
+                        if (*lhsNodeCursor->p == *rhsNodeCursor->p){
+
+                        }
+                    }
+                }
+        }
+    }
 }
