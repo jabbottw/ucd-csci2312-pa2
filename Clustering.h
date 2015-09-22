@@ -10,7 +10,7 @@ using namespace std;
 
 namespace Clustering {
 
-    typedef Point *PointPtr;
+    typedef Point * PointPtr;
     typedef struct LNode *LNodePtr;
 
     struct LNode {
@@ -39,6 +39,12 @@ namespace Clustering {
             void printCluster();
 
             // - Members
+            // TODO fix input parameters. Need to be const
+            //Cluster &operator+=(const Point &rhs); // add point
+            //Cluster &operator-=(const Point &rhs); // remove point
+            Cluster &operator+=(Point &rhs); // add point
+            Cluster &operator-=(Point &rhs); // remove point
+
             //Cluster &operator+=(const Cluster &rhs); // union
             //Cluster &operator-=(const Cluster &rhs); // (asymmetric) difference
 
