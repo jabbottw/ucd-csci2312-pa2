@@ -47,6 +47,7 @@ namespace Clustering {
                 this->add(clstr.points->p);
             }
         }
+        return *this;
     }
 
     Cluster::~Cluster(){
@@ -100,6 +101,17 @@ namespace Clustering {
         }
     }
 
+    Cluster & Cluster::operator+=(Point &rhs){
+        Point * p = &rhs;
+        this->add(p);
+        return  *this;
+    }
+
+    Cluster & Cluster::operator-=(Point &rhs){
+        Point * p = &rhs;
+        this->remove(p);
+        return *this;
+    }
 
 
     // Iterate through the cluster and print the point from each LNode

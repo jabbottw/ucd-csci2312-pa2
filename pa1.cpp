@@ -85,23 +85,34 @@ int main(void)
     }
 
 
+    cout << "Create a new cluster and sample some of the functionality" << endl;
     Cluster * clstr = new Cluster;
 
+    cout << "Add points A, B, C, and H to the cluster" << endl;
     clstr->add(&A);
     clstr->add(&B);
     clstr->add(&C);
     clstr->add(&H);
 
-
+    cout << "Utilize the cluster copy constructor and assignment operators to create two copies of the cluster class" << endl;
     Cluster clstr2(*clstr);
     Cluster clstr3 = clstr2;
-    cout << "***** Cluster Data 1 *****";
+    cout << "***** Print points in Cluster 1 *****";
     clstr->printCluster();
-    cout << "***** Cluster Data 2 *****";
+    cout << "***** Print points in Cluster 2 *****";
     clstr2.printCluster();
-    cout << "***** Cluster Data 3 *****";
+    cout << "***** Print points in Cluster 3 *****";
     PointPtr p = &A;
+    cout << "--- Remove point A from cluster 3 and reprint" << endl;
     clstr3.remove(p);
+    clstr3.printCluster();
+    cout << "Add point A back into cluster 3 using the += operator and reprint" << endl;
+    clstr3 += A;
+    cout << "***** Cluster Data 3 again *****";
+    clstr3.printCluster();
+    cout << "Remove point A from cluster 3 using the -= operator and reprint" << endl;
+    clstr3 -= A;
+    cout << "***** Cluster Data 3 again *****";
     clstr3.printCluster();
 
     return 0;
