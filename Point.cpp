@@ -297,7 +297,7 @@ namespace Clustering {
 
 
 // Auxiliary methods
-    double Point::distanceTo(const Point &B) const { // TODO throw exception
+    double Point::distanceTo(const Point &B) const { // TODO throw  exception
       if (this->dimSize == B.dimSize) {
         double *dimDiff = new double[this->dimSize];
         double dimSum = 0;

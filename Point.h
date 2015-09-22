@@ -32,6 +32,7 @@ namespace Clustering {
 
             void setAllDimValues(double []);
 
+
             // Accessor methods
             double getDimSize() const;
 
