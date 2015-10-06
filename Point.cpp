@@ -313,10 +313,16 @@ namespace Clustering {
 
 
     ostream &operator<<(ostream &os, const Point &pnt) {
-      cout << "Total Dimensions: " << pnt.getDimSize() << endl;
+      cout << "[";
       for (int i = 0; i < pnt.getDimSize(); ++i) {
-        cout << "Dim " << i << ": " << pnt.getDimension(i) << endl;
+        cout << pnt.getDimension(i);
+        if (i == pnt.getDimSize()-1){
+            // do nothing
+        } else {
+            cout << ", ";
+        }
       }
+      cout << "]";
       return os;
     }
 }

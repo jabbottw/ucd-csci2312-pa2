@@ -32,6 +32,7 @@ int main(void)
     G += F;
     Point H(3);
     H -= G;
+    Point X = D - B;
 
     cout << "*** Point A *** " << endl;
     cout << A << endl;
@@ -49,6 +50,8 @@ int main(void)
     cout << G << endl;
     cout << "*** Point H *** " << endl;
     cout << H << endl;
+    cout << "*** Point X *** " << endl;
+    cout << X << endl;
     cout << "Distance between points A & B: " << A.distanceTo(B) << endl;
     if (A == A_copy)
     {
@@ -85,38 +88,93 @@ int main(void)
     }
 
 
-    cout << "Create a new cluster and sample some of the functionality" << endl;
-    Cluster * clstr = new Cluster;
+    cout << endl << "Create a new cluster and sample some of the functionality" << endl;
+    Cluster clstr;// = new Cluster;
+    cout << "Add points A, B, C, E, D, F, & X to the cluster" << endl;
+    clstr.add(&A);
+    clstr.add(&B);
+    clstr.add(&C);
+    clstr.add(&E);
+    clstr.add(&D);
+    clstr.add(&F);
+    clstr.add(&X);
+    cout << endl <<" *** Cluster1 Output *** " << endl;
+    cout << clstr;
+    cout << " *** Test remove points: remove point X[30, 30, 30] *** " << endl;
+    clstr.remove(&X);
+    cout << clstr;
+    cout << " *** Test add points: add point X[30, 30, 30] *** " << endl;
+    clstr.add(&X);
+    cout << clstr;
 
-    cout << "Add points A, B, C, and H to the cluster" << endl;
-    clstr->add(&A);
-    clstr->add(&B);
-    clstr->add(&C);
-    clstr->add(&H);
+    cout << "*** Utilize the cluster copy constructor and assignment operators to create two copies of the cluster class ***" << endl;
+    Cluster clstr2(clstr);
+    cout << "*** Cluster 2 *** " << endl;
+    cout << clstr2;
+    cout << "*** Cluster 3 ***" << endl;
+    Cluster clstr3 = clstr;
+    cout << clstr3;
 
-    cout << "Utilize the cluster copy constructor and assignment operators to create two copies of the cluster class" << endl;
-    Cluster clstr2(*clstr);
-    Cluster clstr3 = clstr2;
-    cout << "***** Print points in Cluster 1 *****";
-    clstr->printCluster();
-    cout << "***** Print points in Cluster 2 *****";
-    clstr2.printCluster();
-    cout << "***** Print points in Cluster 3 *****";
-    PointPtr p = &A;
-    cout << "--- Remove point A from cluster 3 and reprint" << endl;
-    clstr3.remove(p);
-    clstr3.printCluster();
-    cout << "Add point A back into cluster 3 using the += operator and reprint" << endl;
-    clstr3 += A;
-    cout << "***** Cluster Data 3 again *****";
-    clstr3.printCluster();
-    cout << "Remove point A from cluster 3 using the -= operator and reprint" << endl;
-    clstr3 -= A;
-    cout << "***** Cluster Data 3 again *****";
-    clstr3.printCluster();
+    cout << endl << "*** Test difference and sum operators ***" << endl;
+
+    cout << "Create clstr4, add point H to clstr4" << endl;
+    Cluster clstr4;
+    clstr4.add(&H);
+    cout << "*** Cluster 4 ***" << endl;
+    cout << clstr4;
+    cout << "Test union on clstr4 with clstr3" << endl;
+    clstr4 += clstr3;
+    cout << "*** Cluster 4 ***" << endl;
+    cout << clstr4;
+    cout << "Take the asymetric difference of clusters 3 and 4, (i.e. clstr4 - clstr3)" << endl;
+    clstr4 -= clstr3;
+    cout << "*** Cluster 4 ***" << endl;
+    cout << clstr4;
+
+    cout << "***Test overloade cluster + and - operators ***" << endl;
+    Cluster cUnion = clstr4 + clstr3;
+    cout << "*** cUnion (clstr4 + clstr3)***" << endl;
+    cout << cUnion;
+    Cluster clstrAsymetricDif = clstr4 - clstr3;
+    cout << "*** clstrAsymetricDif (clstr4 - clstr3) ***" <<  endl;
+    cout << clstrAsymetricDif;
+
+
+
+    cout << endl << "*** Test comparitors ***" << endl;
+    cout << "*** Test overloaded cluster not equal comparison operator for case when clusters are not equal ***" << endl;
+    if (clstr4 != clstr3){
+        cout << "Cluster 4 is not equal to cluster 3" << endl;
+    } else {
+        cout << "Cluster 4 is equal to cluster 3" << endl;
+    }
+    cout << "*** Test overloaded cluster comparison operator for case when clusters are equal ***" << endl;
+    Cluster clstr3Copy(clstr3);
+    cout << "*** Cluster 3 ***" << endl;
+    cout << clstr3;
+    cout << "*** Cluster 3 Copy ***" << endl;
+    cout << clstr3Copy;
+    if (clstr3Copy == clstr3){
+        cout << "clstr3Copy is equal to cluster 3" << endl;
+    } else {
+        cout << "clstr3Copy is not equal to cluster 3" << endl;
+    }
+
+    cout << endl << "Test overloaded (clstr + point) and (clstr - point) friend operators" << endl;
+    //clstr4 += X;
+    cout << "Cluster4: " << clstr4;
+    Cluster test = clstr4 + &X;
+    cout << "Cluster4 + X: " << test;
+    Cluster test2 = test - &X;
+    cout << "Results of (Cluster4 + X) - X: " << test2;
+
+    test -= X;
+
+    test.printPointAddresses();
+
+    cout << test;
 
     return 0;
 }
-
 
 
