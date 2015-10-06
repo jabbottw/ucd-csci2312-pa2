@@ -127,7 +127,7 @@ using namespace std;
 
 namespace Clustering {
 
-    typedef Point *PointPtr;
+    typedef Point * PointPtr;
     typedef struct LNode *LNodePtr;
 
     struct LNode {
@@ -143,7 +143,6 @@ namespace Clustering {
 
         public:
             Cluster();
-
             // The big three: cpy ctor, overloaded operator=, dtor
             Cluster(const Cluster &);
             Cluster &operator=(const Cluster &);
@@ -152,15 +151,33 @@ namespace Clustering {
             // Set functions: They allow calling c1.add(c2.remove(p));
             void add(const PointPtr &);
             const PointPtr &remove(const PointPtr &);
+            int getSize();
+            LNodePtr getPoints();
 
-            void printCluster();
+            // Tester methods
+            void printPointAddresses();
 
             // - Members
-            //Cluster &operator+=(const Cluster &rhs); // union
-            //Cluster &operator-=(const Cluster &rhs); // (asymmetric) difference
+            Cluster &operator+=(const Point &rhs); // add point
+            Cluster &operator-=(const Point &rhs); // remove point
 
-            //Cluster &operator+=(const Point &rhs); // add point
-            //Cluster &operator-=(const Point &rhs); // remove point
+            Cluster &operator+=(const Cluster &rhs); // union
+            Cluster &operator-=(const Cluster &rhs); // (asymmetric) difference
+
+            // Friends
+            friend bool operator==(const Cluster &lhs, const Cluster &rhs);
+            friend bool operator!=(const Cluster &lhs, const Cluster &rhs);
+
+            friend const Cluster operator+(const Cluster &lhs, const Cluster &rhs);
+            friend const Cluster operator-(const Cluster &lhs, const Cluster &rhs);
+
+            friend const Cluster operator+(const Cluster &lhs, const PointPtr &rhs);
+            friend const Cluster operator-(const Cluster &lhs, const PointPtr &rhs);
+
+
+            // IO
+            friend std::ostream &operator<<(std::ostream &, const Cluster &);
+            friend std::istream &operator>>(std::istream &, Cluster &);
 
     };
 }
