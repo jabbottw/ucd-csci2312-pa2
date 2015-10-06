@@ -15,7 +15,7 @@ namespace Clustering {
 
     struct LNode {
         PointPtr p;
-        LNodePtr next = nullptr;
+        LNodePtr next;
     };
 
     class Cluster {
