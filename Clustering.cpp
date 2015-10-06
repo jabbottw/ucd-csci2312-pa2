@@ -147,18 +147,20 @@ namespace Clustering {
 
 
     Cluster & Cluster::operator+=(const Point &rhs){
-        Point rhsCopy = rhs;
-        rhsCopy.setDimSize(rhs.getDimSize());
-        PointPtr p = &rhsCopy;
-        this->add(p);
+        cout << "overloaded operator += is currently unusable, please differ to the add() member function" << endl;
+//        Point rhsCopy = rhs;
+//        rhsCopy.setDimSize(rhs.getDimSize());
+//        PointPtr p = &rhsCopy;
+//        this.add(p);
         return *this;
     }
 
     Cluster & Cluster::operator-=(const Point &rhs){
-        Point rhsCopy = rhs;
-        rhsCopy.setDimSize(rhs.getDimSize());
-        PointPtr p = &rhsCopy;
-        this->remove(p);
+        cout << "overloaded operator -= is currently unusable, please differ to the remove() member function" << endl;
+//        Point rhsCopy = rhs;
+//        rhsCopy.setDimSize(rhs.getDimSize());
+//        PointPtr p = &rhsCopy;
+//        this->remove(p);
         return *this;
     }
 
