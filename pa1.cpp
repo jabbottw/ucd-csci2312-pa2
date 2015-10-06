@@ -169,6 +169,7 @@ int main(void)
     cout << "Results of (Cluster4 + X) - X: " << test2;
 
     test -= X;
+    test +=X;
 
     test.printPointAddresses();
 
