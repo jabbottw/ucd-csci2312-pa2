@@ -50,7 +50,12 @@ namespace Clustering {
 
     // Destructor
     Cluster::~Cluster(){
-
+        for (LNodePtr nCursor = this->points; nCursor != nullptr; ){
+            delete nCursor->p;
+            LNodePtr nPrev = nCursor;
+            nCursor = nCursor->next;
+            delete nPrev;
+        }
     }
 
     int Cluster::getSize(){
