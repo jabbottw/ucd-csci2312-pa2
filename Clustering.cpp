@@ -44,6 +44,7 @@ namespace Clustering {
             }
             for (LNodePtr nCursor = clstr.points; nCursor != nullptr; ){
                 this->add(nCursor->p);
+                nCursor=nCursor->next;
             }
         }
         return *this;
@@ -219,6 +220,7 @@ namespace Clustering {
                 }
             }
         }
+        return *this;
     }
 
     // Asymmetric Difference
@@ -238,6 +240,7 @@ namespace Clustering {
                 this->remove(thisNodeCursor->p);
             }
         }
+        return *this;
     }
 
     // Cluster comparison operator
@@ -339,10 +342,6 @@ namespace Clustering {
      */
     istream &operator>>(istream &is, Cluster &clstr){
 
-        /*double aDimensions[3] = {50,50,50};
-        PointPtr ptr = new Point(3, aDimensions);
-        clstr.add(ptr);*/
-
         string s;
         size_t pos = 0;
         vector <double>dimVector;
@@ -359,22 +358,21 @@ namespace Clustering {
             try {
                 double d = stod(dim);
                 dimVector.push_back(d);
+                double * dimValArray = new double[dimVector.size()];
+                for (int i = 0; i < dimVector.size(); i++){
+                    dimValArray[i] = dimVector[i];
+                }
+                PointPtr ptr = new Point(dimVector.size());
+                ptr->setAllDimValues(dimValArray);
+                clstr.add(ptr);
+                dimVector.clear();
             }
             catch (const std::invalid_argument&) {
-                std::cerr << "Argument is invalid\n";
-                throw;
+                std::cerr << "Invalid argument found within the input stream. \"Point Add\" skipped\n\n";
             } catch (const std::out_of_range&) {
                 std::cerr << "Argument is out of range for a double\n";
-                throw;
             }
 
-            double * dimValArray = new double[dimVector.size()];
-            for (int i = 0; i < dimVector.size(); i++){
-                dimValArray[i] = dimVector[i];
-            }
-            PointPtr ptr = new Point(dimVector.size());
-            ptr->setAllDimValues(dimValArray);
-            clstr.add(ptr);
             dimVector.clear();
         }
         return is;
