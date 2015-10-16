@@ -254,10 +254,16 @@ namespace Clustering {
     }
 
     void Point::setDimValueN(int n, double m) {
-      this->dimValues[n] = m;
+        if (this->dimValues != nullptr) {
+            this->dimValues[n] = m;
+        }
     }
 
     void Point::setAllDimValues(double *newDimValues) {
+        // TODO Need to account for situations where this->dimSize is not set
+      if (this->dimValues == nullptr){
+          this->dimValues = new double[this->dimSize];
+      }
       for (int i = 0; i < this->dimSize; ++i) {
         this->dimValues[i] = newDimValues[i];
       }
@@ -314,9 +320,11 @@ namespace Clustering {
 
     ostream &operator<<(ostream &os, const Point &pnt) {
       cout << "[";
-      for (int i = 0; i < pnt.getDimSize(); ++i) {
-        cout << pnt.getDimension(i);
-        if (i == pnt.getDimSize()-1){
+      Point p(pnt);
+      int d = p.getDimSize();
+      for (int i = 0; i < d; ++i) {
+        cout << p.getDimension(i);
+        if (i == d-1){
             // do nothing
         } else {
             cout << ", ";

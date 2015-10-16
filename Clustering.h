@@ -11,7 +11,7 @@ using namespace std;
 namespace Clustering {
 
     typedef Point * PointPtr;
-    typedef struct LNode *LNodePtr;
+    typedef struct LNode * LNodePtr;
 
     struct LNode {
         PointPtr p;

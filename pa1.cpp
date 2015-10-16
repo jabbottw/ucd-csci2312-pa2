@@ -7,6 +7,7 @@
  * ***/
 
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 #include "Point.h"
 #include "Clustering.h"
@@ -115,6 +116,7 @@ int main(void)
     Cluster clstr3 = clstr;
     cout << clstr3;
 
+
     cout << endl << "*** Test difference and sum operators ***" << endl;
 
     cout << "Create clstr4, add point H to clstr4" << endl;
@@ -131,7 +133,7 @@ int main(void)
     cout << "*** Cluster 4 ***" << endl;
     cout << clstr4;
 
-    cout << "***Test overloade cluster + and - operators ***" << endl;
+    cout << "***Test overloaded cluster + and - operators ***" << endl;
     Cluster cUnion = clstr4 + clstr3;
     cout << "*** cUnion (clstr4 + clstr3)***" << endl;
     cout << cUnion;
@@ -161,19 +163,34 @@ int main(void)
     }
 
     cout << endl << "Test overloaded (clstr + point) and (clstr - point) friend operators" << endl;
-    //clstr4 += X;
-    cout << "Cluster4: " << clstr4;
-    Cluster test = clstr4 + &X;
-    cout << "Cluster4 + X: " << test;
-    Cluster test2 = test - &X;
-    cout << "Results of (Cluster4 + X) - X: " << test2;
 
-    test -= X;
-    test +=X;
+    Cluster clstr5;
+    clstr5.add(&H);
+    clstr5.add(&H);
 
-    test.printPointAddresses();
+    cout << "Cluster5_init: " << clstr5;
+    clstr5 += X;
+    cout << "Cluster5_second: " << clstr5;
+    Cluster cluster_sum = clstr5 + &X;
+    cout << "cluster_sum: " << cluster_sum;
 
-    cout << test;
+
+
+    cout << endl << "Cluster 5 Point Addresses" << endl;
+    cluster_sum.printPointAddresses();
+
+    cout << endl << "Point X address: " << &X << endl;
+    cluster_sum -= X;
+    cluster_sum -= H;
+    cout << endl << "cluster_sum -= X: " << cluster_sum << endl;
+
+    // Test overloaded isOperator
+    cout << "*** Test Overloaded isOperator ***" << endl;
+    Cluster isCluster;
+    std::ifstream data("/Users/julianabbott-whitley/Google_Drive/School/UCD/Current_Classes/CSCI_2312_Intermediate/ucd-csci2312-pa2/data.txt");
+
+    data >> isCluster;
+    cout << isCluster;
 
     return 0;
 }

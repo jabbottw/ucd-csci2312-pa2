@@ -3,7 +3,8 @@
 //
 
 #include <iostream>
-#include <String>
+#include <string>
+#include <Vector>
 #include "Point.h"
 #include "Clustering.h"
 
@@ -50,12 +51,12 @@ namespace Clustering {
 
     // Destructor
     Cluster::~Cluster(){
-        for (LNodePtr nCursor = this->points; nCursor != nullptr; ){
+/*        for (LNodePtr nCursor = this->points; nCursor != nullptr; ){
             delete nCursor->p;
             LNodePtr nPrev = nCursor;
             nCursor = nCursor->next;
             delete nPrev;
-        }
+        }*/
     }
 
     int Cluster::getSize(){
@@ -66,6 +67,11 @@ namespace Clustering {
         return this->points;
     }
 
+    /*
+     * Adds the point, referenced by the point pnt to the cluster
+     * Point is inserted in lexicographical order based on the point dimensions, (i.e. lowest to highest )
+     * If two points have the same dimensions, then the memory address is used to order the points
+     */
     void Cluster::add(const PointPtr & pntPointer) {
         // Create a pointer to a new LNode structure object, dynamically allocated on the heap
         LNodePtr nPntr = new LNode;
@@ -127,21 +133,23 @@ namespace Clustering {
         this->size += 1;
     }
 
+    /*
+     * Removes the referenced point from the cluster
+     * Iterates through the entire cluster to make sure that
+     * all instances of point address 0xABC123 are removed
+     */
     const PointPtr & Cluster::remove(const PointPtr & pntPointer){
         LNodePtr nodeCursor;
-        LNodePtr previousNode;
-        previousNode = nullptr;
+        LNodePtr previousNode = nullptr;
 
         for (nodeCursor = this->points; nodeCursor != nullptr;  nodeCursor = nodeCursor->next) {
             if (nodeCursor->p == pntPointer) {
                 if(previousNode == nullptr){
                     this->points = this->points->next;
                     --(this->size);
-                    return pntPointer;
                 } else {
                     previousNode->next = nodeCursor->next;
                     --(this->size);
-                    return pntPointer;
                 }
             } else {
                 previousNode = nodeCursor;
@@ -150,22 +158,41 @@ namespace Clustering {
         return pntPointer;
     }
 
-
+    /*
+     * Adds the referenced point to the cluster
+     * Creates a new point in memory on the heap
+     * Can't seem to create a pointer that will reference the address location
+     * of the rhs point, due to the const conditions
+     * Attempted to create const PointPtrs, but the process drew an error
+     */
     Cluster & Cluster::operator+=(const Point &rhs){
-        cout << "overloaded operator += is currently unusable, please differ to the add() member function" << endl;
-//        Point rhsCopy = rhs;
-//        rhsCopy.setDimSize(rhs.getDimSize());
-//        PointPtr p = &rhsCopy;
-//        this.add(p);
+        PointPtr ptr = new Point(rhs);
+        this->add(ptr);
         return *this;
     }
 
+    /*
+     * Removes the referenced point from the cluster
+     * Iterates through the entire cluster to make sure that
+     * all instances of point address 0xABC123 are removed
+     */
     Cluster & Cluster::operator-=(const Point &rhs){
-        cout << "overloaded operator -= is currently unusable, please differ to the remove() member function" << endl;
-//        Point rhsCopy = rhs;
-//        rhsCopy.setDimSize(rhs.getDimSize());
-//        PointPtr p = &rhsCopy;
-//        this->remove(p);
+        LNodePtr nodeCursor;
+        LNodePtr previousNode = nullptr;
+
+        for (nodeCursor = this->points; nodeCursor != nullptr;  nodeCursor = nodeCursor->next) {
+            if (nodeCursor->p == &rhs) {
+                if(previousNode == nullptr){
+                    this->points = this->points->next;
+                    --(this->size);
+                } else {
+                    previousNode->next = nodeCursor->next;
+                    --(this->size);
+                }
+            } else {
+                previousNode = nodeCursor;
+            }
+        }
         return *this;
     }
 
@@ -213,6 +240,7 @@ namespace Clustering {
         }
     }
 
+    // Cluster comparison operator
     bool operator==(const Cluster &lhs, const Cluster &rhs){
         if(lhs.size != rhs.size) {
             return false;
@@ -229,6 +257,7 @@ namespace Clustering {
         return true;
     }
 
+    // Cluster comparison operator
     bool operator!=(const Cluster &lhs, const Cluster &rhs){
         if (lhs == rhs){
             return false;
@@ -237,52 +266,124 @@ namespace Clustering {
         }
     }
 
+    // Cluster Union
     const Cluster operator+(const Cluster &lhs, const Cluster &rhs){
         Cluster clstrUnion(lhs);
         clstrUnion += rhs;
         return clstrUnion;
     }
 
+    // Asymmetric Difference
     const Cluster operator-(const Cluster &lhs, const Cluster &rhs){
         Cluster clstrUnion(lhs);
         clstrUnion -= rhs;
         return clstrUnion;
     }
 
+    /*
+     * Create a copy cluster of the LHS cluster
+     * Add the referenced point to the copy cluster
+     * return the copied cluster
+     */
     const Cluster operator+(const Cluster &lhs, const PointPtr &rhs){
         Cluster clstrCopy(lhs);
         clstrCopy.add(rhs);
         return clstrCopy;
     }
 
-
+    /*
+     * Create a copy cluster of the LHS cluster
+     * Remove the referenced point from the copied cluster
+     * return the copied cluster
+     */
     const Cluster operator-(const Cluster &lhs, const PointPtr &rhs){
         Cluster clstrCopy(lhs);
         clstrCopy.remove(rhs);
         return clstrCopy;
     }
 
+    /*
+     * Overloaded Output Stream Operator
+     * Print all of the point dimensions in the referenced cluster
+     */
     ostream &operator<<(ostream &os, const Cluster &clstr){
-        LNodePtr nodeCursor = clstr.points;
+        LNodePtr tmp = clstr.points;
         cout << "[";
-        for (int i = 0; i < clstr.size; ++i) {
+        int currentPointDim;
+        int nextPointDim;
+        for (LNodePtr nodeCursor = clstr.points; nodeCursor != nullptr;  nodeCursor = nodeCursor->next){
+            currentPointDim = (nodeCursor->p->getDimSize());
             cout << *(nodeCursor->p);
-            if (i == clstr.size-1){
+            if (nodeCursor->next == nullptr){
                 // do nothing
             } else {
                 cout << ", ";
+                nextPointDim = nodeCursor->next->p->getDimSize();
             }
-            nodeCursor = nodeCursor->next;
         }
         cout << "]" << endl;
         return os;
     }
 
+    /*
+     * Overloaded input stream operator
+     * Parse the input stream and insert the various points into the cluster
+     * Expected file format for input Stream:
+     *      Each line refers to a new point instance
+     *      Dimensions 'comma delimited'
+     *      The following input stream would create a cluster containing (4) 3-dimensional points
+     *           1, 2, 3
+     *           4, 5, 6
+     *           7, 8, 9
+     *           9, 9, 9
+     */
     istream &operator>>(istream &is, Cluster &clstr){
-        is >> clstr;
+
+        /*double aDimensions[3] = {50,50,50};
+        PointPtr ptr = new Point(3, aDimensions);
+        clstr.add(ptr);*/
+
+        string s;
+        size_t pos = 0;
+        vector <double>dimVector;
+        string delimiter = ",";
+        while(getline(is, s)) {
+            size_t pos = 0;
+            string dim;
+            while ((pos = s.find(delimiter)) != string::npos) {
+                dim = s.substr(0, pos);
+                dimVector.push_back(stod(dim));
+                s.erase(0, pos + delimiter.length());
+            }
+            dim = s.substr(0, pos);
+            try {
+                double d = stod(dim);
+                dimVector.push_back(d);
+            }
+            catch (const std::invalid_argument&) {
+                std::cerr << "Argument is invalid\n";
+                throw;
+            } catch (const std::out_of_range&) {
+                std::cerr << "Argument is out of range for a double\n";
+                throw;
+            }
+
+            double * dimValArray = new double[dimVector.size()];
+            for (int i = 0; i < dimVector.size(); i++){
+                dimValArray[i] = dimVector[i];
+            }
+            PointPtr ptr = new Point(dimVector.size());
+            ptr->setAllDimValues(dimValArray);
+            clstr.add(ptr);
+            dimVector.clear();
+        }
         return is;
     }
 
+    /*
+     * Print the point address for each point in the cluster
+     * Used for debugging.
+     */
     void Cluster::printPointAddresses(){
         LNodePtr cursor = this->points;
         for (int i = 0; i < this->size; i++){
