@@ -2,13 +2,16 @@
 // Coordinates are double-precision floating point.
 #ifndef CLUSTERING_POINT_H
 #define CLUSTERING_POINT_H
-#include <iostream>
+
 
 using namespace std;
 
 namespace Clustering {
 
     class Point {
+
+        static const char POINT_VALUE_DELIM;
+
         private:
             int dimSize;
             double *dimValues;
@@ -76,7 +79,7 @@ namespace Clustering {
             friend bool operator>=(const Point &, const Point &);
 
             friend std::ostream &operator<<(ostream &, const Point &);
-            //friend std::istream &operator>>(std::istream &, Point &);
+            friend std::istream &operator>>(std::istream &, Point &);
     };
 }
 #endif // CLUSTERING_POINT_H

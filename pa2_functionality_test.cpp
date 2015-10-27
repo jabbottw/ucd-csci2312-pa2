@@ -1,6 +1,5 @@
 /*****
- * Created by Ivo Georgiev on 8/25/15.
- * Edited by Julian Abbott-Whitley 8/30/2015
+ * Created by Julian Abbott-Whitley 8/30/2015
  * CSCI 2312 Intermediate Programming
  * University of Colorado Denver
  * 1:00 PM T-Th
@@ -16,7 +15,7 @@ using namespace std;
 using namespace Clustering;
 
 
-int main(void)
+int pa2_test(void)
 {
     double aDimensions[3] = {5,5,5};
     double bDimensions[3] = {10, 10, 10};

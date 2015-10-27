@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include <string>
+#include <sstream>
 #include <Vector>
 #include "Point.h"
 #include "Clustering.h"
@@ -12,9 +12,14 @@ using namespace std;
 
 namespace Clustering {
 
+    const char Cluster::POINT_CLUSTER_ID_DELIM = ':';
+    unsigned int Cluster::clusterCount = 0;
+
     Cluster::Cluster() {
-        size = 0;
-        points = nullptr;
+        this->size = 0;
+        this->points = nullptr;
+        this->__id = this->cluster_id_generator();
+        this->centroidValidity = false;
     }
 
     // Copy Constructor
@@ -23,11 +28,13 @@ namespace Clustering {
             // do nothing
         } else {
             this->size = 0;
-            }
-            for (LNodePtr nCursor = clstr.points; nCursor != nullptr; ){
+            __id = this->cluster_id_generator();
+            bool centroidValidity = false;
+            for (LNodePtr nCursor = clstr.points; nCursor != nullptr;) {
                 this->add(nCursor->p);
                 nCursor = nCursor->next;
             }
+        }
     }
 
     // Overloaded assignment operator
@@ -36,6 +43,8 @@ namespace Clustering {
             return *this;
         } else {
             this->size = 0;
+            __id = this->cluster_id_generator();
+            bool centroidValidity = false;
             for (LNodePtr nCursor = this->points; nCursor != nullptr; ) {
                 delete nCursor->p;
                 LNodePtr nPrev = nCursor;
@@ -68,6 +77,90 @@ namespace Clustering {
         return this->points;
     }
 
+    unsigned int Cluster::get_cluster_id(){
+        return this->__id;
+    }
+
+
+    /*
+     * Class centroids function implementations
+     */
+    void Cluster::set_centroid(const Point & pnt){
+        this->__centroid.setDimSize(pnt.getDimSize());
+        this->__centroid.setAllDimValues(pnt.getAllDimensions());
+    }
+
+    const Point Cluster::get_centroid(){
+        return this->__centroid;
+    }
+
+    void Cluster::compute_centroid(){
+        // Need to watch out for overloading
+    }
+
+    void Cluster::validate_centroid(int valid){
+        if (valid){
+            this->centroidValidity = true;
+        } else {
+            this->centroidValidity = false;
+        }
+    }
+
+    bool Cluster::check_centroid_validity(){
+        return this->centroidValidity;
+    }
+
+                /* Kmeans functions */
+
+    /*
+     * Picks k points from the initial cluster which will be used for the initial centroid locations
+     * Selects and even distribution across the entire cluster, since the cluster is sorted lexicographically
+     * Step size is the result of the (clusterSize - 1) / k
+     * Function selects every nth point from the list where n = [stepSize + (m * StepSize)] and m = point index in the filled array
+     */
+    void Cluster::pickPoints(int k, PointPtr * pointArray){
+        LNodePtr nodeCursor = this->points;
+        int stepSize = (this->size - 1) / k;
+        for (int i = 0; i < k; i++){
+            for(int j = 0; j < stepSize; j++){
+                nodeCursor = nodeCursor->next;
+            }
+            pointArray[i] = nodeCursor->p;
+
+        }
+    }
+
+
+    // Kmeans functions
+    // This is the sum of the distances between every two points in the cluster.
+    // Hint: This can be done in a double loop through the points of the cluster.
+    // However, this will count every distance twice, so you need to divide the sum by 2 before returning it.
+    double Cluster::intraClusterDistance() const{
+
+        return 0;
+    }
+    // This returns the number of distinct point pairs, or edges, in a cluster.
+    // (That is, every two distinct points have an imaginary edge between them.
+    // Its length is the distance between the two points.) This is simply size * (size - 1) / 2,
+    // where size is the size of the cluster.
+    int Cluster::getClusterEdges(){
+
+        return 0;
+    }
+
+    //Same thing as (intraClusterDistance), but between two clusters.
+    double interClusterDistance(const Cluster &c1, const Cluster &c2){
+
+        return 0;
+    }
+    // Same thing as (getClusterEdges), but between two clusters.
+    double interClusterEdges(const Cluster &c1, const Cluster &c2){
+
+        return 0;
+    }
+
+
+
     /*
      * Adds the point, referenced by the point pnt to the cluster
      * Point is inserted in lexicographical order based on the point dimensions, (i.e. lowest to highest )
@@ -92,7 +185,7 @@ namespace Clustering {
                 break;
             // If there is only one node, just determine the correct spot for the new node, (i.e. 1st or 2nd)
             case 1:
-                // if point one is greater than input point, then place new point at slot one in cluster
+                // if point one is greater than input point, then place new point at slot zero in cluster
                 if (*this->points->p > *nPntr->p){
                     nCursor = this->points;
                     this->points = nPntr;
@@ -106,7 +199,7 @@ namespace Clustering {
                 // Iterate through the linked list and place point appropriately
                 for (nCursor = this->points; nCursor != nullptr; nCursor = nCursor->next){
                     // If nPrev is null and the input point is smaller than the cursor, place point at begining of list
-                    if ((nPrev == nullptr) && (*nPntr->p < *nCursor->p)){
+                    if ((nPrev == nullptr) and (*nPntr->p < *nCursor->p)){
                         nPntr->next = nCursor;
                         this->points = nPntr;
                         break;
@@ -311,20 +404,10 @@ namespace Clustering {
      */
     ostream &operator<<(ostream &os, const Cluster &clstr){
         LNodePtr tmp = clstr.points;
-        cout << "[";
-        int currentPointDim;
-        int nextPointDim;
         for (LNodePtr nodeCursor = clstr.points; nodeCursor != nullptr;  nodeCursor = nodeCursor->next){
-            currentPointDim = (nodeCursor->p->getDimSize());
-            cout << *(nodeCursor->p);
-            if (nodeCursor->next == nullptr){
-                // do nothing
-            } else {
-                cout << ", ";
-                nextPointDim = nodeCursor->next->p->getDimSize();
-            }
+            os << *(nodeCursor->p);
+            os << Cluster::POINT_CLUSTER_ID_DELIM << rand() % 5 << endl;
         }
-        cout << "]" << endl;
         return os;
     }
 
@@ -342,40 +425,40 @@ namespace Clustering {
      */
     istream &operator>>(istream &is, Cluster &clstr){
 
-        string s;
-        size_t pos = 0;
-        vector <double>dimVector;
-        string delimiter = ",";
-        while(getline(is, s)) {
-            size_t pos = 0;
-            string dim;
-            while ((pos = s.find(delimiter)) != string::npos) {
-                dim = s.substr(0, pos);
-                dimVector.push_back(stod(dim));
-                s.erase(0, pos + delimiter.length());
-            }
-            dim = s.substr(0, pos);
-            try {
-                double d = stod(dim);
-                dimVector.push_back(d);
-                double * dimValArray = new double[dimVector.size()];
-                for (int i = 0; i < dimVector.size(); i++){
-                    dimValArray[i] = dimVector[i];
-                }
-                PointPtr ptr = new Point(dimVector.size());
-                ptr->setAllDimValues(dimValArray);
+        string inputData;
+        string cleanedData;
+        while(getline(is, inputData)){
+            cleanedData = clstr.clean_string(inputData);
+            if (cleanedData.length() != 0){
+                stringstream sData(cleanedData);
+                PointPtr ptr = new Point;
+                sData >> *ptr;
                 clstr.add(ptr);
-                dimVector.clear();
             }
-            catch (const std::invalid_argument&) {
-                std::cerr << "Invalid argument found within the input stream. \"Point Add\" skipped\n\n";
-            } catch (const std::out_of_range&) {
-                std::cerr << "Argument is out of range for a double\n";
-            }
-
-            dimVector.clear();
         }
         return is;
+    }
+
+    /*
+     * Overloaded Output Stream Operator
+     * Print all of the point dimensions in the referenced cluster
+     */
+    void Cluster::printCluster(){
+        LNodePtr tmp = this->points;
+        cout << "[";
+        int currentPointDim;
+        int nextPointDim;
+        for (LNodePtr nodeCursor = this->points; nodeCursor != nullptr;  nodeCursor = nodeCursor->next){
+            currentPointDim = (nodeCursor->p->getDimSize());
+            cout << *nodeCursor->p;
+            if (nodeCursor->next == nullptr){
+                // do nothing
+            } else {
+                cout << ", ";
+                nextPointDim = nodeCursor->next->p->getDimSize();
+            }
+        }
+        cout << "]" << endl;
     }
 
     /*
@@ -388,6 +471,28 @@ namespace Clustering {
             cout << "Point " << i << ": " << cursor->p << endl;
             cursor = cursor->next;
         }
+    }
+
+    /*
+     * Clean string data from input stream
+     * Remove all tabs and check for empty lines
+     */
+    string Cluster::clean_string(string str)
+    {
+        int s=str.find_first_not_of(" \t");
+        int e=str.find_last_not_of(" \t");
+
+        if (s!=-1 && e!=-1)
+            return str.substr(s, e-s+1);
+
+        return "";
+    }
+
+    // Static id generator method
+    // TODO currently only increments the cluster id values
+    // TODO Doesn't hand removed clusters
+    unsigned int Cluster::cluster_id_generator(){
+        return Cluster::clusterCount++;;
     }
 }
 

@@ -7,7 +7,9 @@
       <sourceFolder url="file://$MODULE_DIR$/Clustering.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Point.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Point.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/pa1.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/kmeans.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/kmeans.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/pa3_main.cpp" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
