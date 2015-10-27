@@ -136,27 +136,39 @@ namespace Clustering {
     // Hint: This can be done in a double loop through the points of the cluster.
     // However, this will count every distance twice, so you need to divide the sum by 2 before returning it.
     double Cluster::intraClusterDistance() const{
-
-        return 0;
+        double sum = 0;
+        for (LNodePtr nPtr0 = this->points; nPtr0 != nullptr; nPtr0 = nPtr0->next){
+            for (LNodePtr nPtr1 = this->points; nPtr1 != nullptr; nPtr1 = nPtr1->next){
+                sum += nPtr0->p->distanceTo(*nPtr1->p);
+            }
+        }
+        return sum / 2.0;
     }
     // This returns the number of distinct point pairs, or edges, in a cluster.
     // (That is, every two distinct points have an imaginary edge between them.
     // Its length is the distance between the two points.) This is simply size * (size - 1) / 2,
     // where size is the size of the cluster.
     int Cluster::getClusterEdges(){
-
-        return 0;
+        return (this->size * ((this->size - 1) / 2));
     }
 
     //Same thing as (intraClusterDistance), but between two clusters.
     double interClusterDistance(const Cluster &c1, const Cluster &c2){
-
-        return 0;
+        Cluster clstrA(c1);
+        Cluster clstrB(c2);
+        double sum = 0;
+        for (LNodePtr nPtr0 = clstrA.getPoints(); nPtr0 != nullptr; nPtr0 = nPtr0->next){
+            for (LNodePtr nPtr1 = clstrB.getPoints(); nPtr1 != nullptr; nPtr1 = nPtr1->next){
+                sum += nPtr0->p->distanceTo(*nPtr1->p);
+            }
+        }
+        return sum / 2.0;
     }
     // Same thing as (getClusterEdges), but between two clusters.
     double interClusterEdges(const Cluster &c1, const Cluster &c2){
-
-        return 0;
+        Cluster clstrA(c1);
+        Cluster clstrB(c2);
+        return ((clstrA.getSize() + clstrB.getSize()) * ((clstrA.getSize() + clstrB.getSize() - 2) / 2));
     }
 
 
