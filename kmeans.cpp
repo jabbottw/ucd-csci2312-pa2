@@ -118,7 +118,7 @@ namespace Clustering {
         int cSize = this->main_cluster->getSize() / this->k; // Number of points to load into each cluster
         int n;      // current cluster being processed
         for (int i = 0; i < cSize; i++){
-            
+
         }
     }
 }
