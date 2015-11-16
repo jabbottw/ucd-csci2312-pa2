@@ -40,6 +40,21 @@ namespace Clustering {
 
     }
 
+    // Constructor
+    // Initializes the point class and sets the number of dimensions()
+    // Sets each dimension equal to the default value
+    Point::Point(int dimSize, int defaultVal) {
+        /* TODO
+         * Q: How should we best verify that the dim_values array matches the dim value?
+         * */
+        this->dimSize = dimSize;
+        this->dimValues = new double[dimSize];
+        for (int i = 0; i < dimSize; ++i) {
+            this->dimValues[i] = defaultVal;
+        }
+
+    }
+
     // Overloaded copy constructor
     Point::Point(const Point &pnt) : dimSize(pnt.getDimSize()), dimValues(pnt.getAllDimensions()) { }
 

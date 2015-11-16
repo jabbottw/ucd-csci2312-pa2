@@ -21,26 +21,34 @@ namespace Clustering {
         ClusterPtr * clusters;
         PointPtr * pointArray;
         int k;
+        static double SCORE_DIFF_THRESHOLD;
 
     public:
-        static double SCORE_DIFF_THRESHOLD;
 
         // constructor
         kmeans();
         kmeans(int);
         // Member Functions
+        // setters
         void set_k_value(int k);
         void load_main_cluster_from_file(string);
+        void create_k_clusters();
+        void load_initial_points_into_k_clusters();
+        double calculateClusterScoreDiff(double, double);
+        void process_kmeans();
+
+        // getters
+        int get_k_value();
+
+        // member tools
         void pick_K_point_arr();
         void show_K_points();
-        void create_k_clusters();
-        void load_points_into_k_clusters();
-        void qc_K_clusters();
+        int get_closest_centroid(const PointPtr);
+        void qc_K_clusters(bool);
 
         double computeClusteringScore();
 
-
-        void write_cluster_to_file(string, Cluster &);
+        void write_cluster_to_file(string, int);
 
     };
 

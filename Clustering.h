@@ -46,7 +46,7 @@ namespace Clustering {
             // Member get functions
             int getSize();
             LNodePtr getPoints();
-            unsigned int get_cluster_id();
+            const unsigned int get_cluster_id();
 
             // Centroid member functions
             void set_centroid(const Point &);
@@ -57,6 +57,7 @@ namespace Clustering {
 
             //Kmeans type functions
             void pickPoints(int k, PointPtr *pointArray);
+
 
             // Class tester methods
             void printPointAddresses();
@@ -78,7 +79,7 @@ namespace Clustering {
             // (That is, every two distinct points have an imaginary edge between them.
             // Its length is the distance between the two points.) This is simply size * (size - 1) / 2,
             // where size is the size of the cluster.
-            int getClusterEdges();
+            int intraClusterEdges();
 
             //Same thing as (intraClusterDistance), but between two clusters.
             friend double interClusterDistance(const Cluster &c1, const Cluster &c2);

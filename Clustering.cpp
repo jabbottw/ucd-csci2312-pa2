@@ -77,7 +77,7 @@ namespace Clustering {
         return this->points;
     }
 
-    unsigned int Cluster::get_cluster_id(){
+    const unsigned int Cluster::get_cluster_id(){
         return this->__id;
     }
 
@@ -95,7 +95,16 @@ namespace Clustering {
     }
 
     void Cluster::compute_centroid(){
-        // Need to watch out for overloading
+        if (this->points!=nullptr) {
+            int dimSize = this->points->p->getDimSize();
+            PointPtr centroid = new Point(dimSize, 0);
+            int count = 0;
+            int tLoops = 0;
+            for (LNodePtr nPtr = this->points; nPtr != nullptr; nPtr = nPtr->next) {
+                *centroid += *nPtr->p / this->getSize();
+            }
+            this->set_centroid(*centroid);
+        }
     }
 
     void Cluster::validate_centroid(int valid){
@@ -120,13 +129,16 @@ namespace Clustering {
      */
     void Cluster::pickPoints(int k, PointPtr * pointArray){
         LNodePtr nodeCursor = this->points;
-        int stepSize = (this->size - 1) / k;
+        int stepSize = (this->size) / (k+1);
+        cout << "Total Points: " << this->size << endl;
+        cout << "### stepsize: " << stepSize << endl;
+        cout << "### Centroids" << endl;
         for (int i = 0; i < k; i++){
             for(int j = 0; j < stepSize; j++){
                 nodeCursor = nodeCursor->next;
             }
             pointArray[i] = nodeCursor->p;
-
+            cout << *nodeCursor->p << endl;
         }
     }
 
@@ -142,14 +154,14 @@ namespace Clustering {
                 sum += nPtr0->p->distanceTo(*nPtr1->p);
             }
         }
-        return sum / 2.0;
+        return (sum / 2.0);
     }
     // This returns the number of distinct point pairs, or edges, in a cluster.
     // (That is, every two distinct points have an imaginary edge between them.
     // Its length is the distance between the two points.) This is simply size * (size - 1) / 2,
     // where size is the size of the cluster.
-    int Cluster::getClusterEdges(){
-        return (this->size * ((this->size - 1) / 2));
+    int Cluster::intraClusterEdges(){
+        return ((this->size * (this->size - 1)) / 2);
     }
 
     //Same thing as (intraClusterDistance), but between two clusters.
@@ -162,13 +174,16 @@ namespace Clustering {
                 sum += nPtr0->p->distanceTo(*nPtr1->p);
             }
         }
-        return sum / 2.0;
+        return (sum / 2.0);
     }
-    // Same thing as (getClusterEdges), but between two clusters.
+    // Same thing as (intraClusterEdges), but between two clusters.
     double interClusterEdges(const Cluster &c1, const Cluster &c2){
         Cluster clstrA(c1);
         Cluster clstrB(c2);
-        return ((clstrA.getSize() + clstrB.getSize()) * ((clstrA.getSize() + clstrB.getSize() - 2) / 2));
+        int totalPoints = clstrA.getSize() + clstrB.getSize();
+        double edges = (totalPoints * (totalPoints - 1)) / 2;
+        edges -= ((clstrA.getSize() * (clstrA.getSize() - 1)) / 2);
+        return edges;
     }
 
 
@@ -302,6 +317,8 @@ namespace Clustering {
         return *this;
     }
 
+
+
     // Union of the two clusters
     Cluster & Cluster::operator+=(const Cluster &rhs){
         if (this->size == 0){
@@ -416,9 +433,10 @@ namespace Clustering {
      */
     ostream &operator<<(ostream &os, const Cluster &clstr){
         LNodePtr tmp = clstr.points;
+        unsigned int cluster_id = clstr.__id;
         for (LNodePtr nodeCursor = clstr.points; nodeCursor != nullptr;  nodeCursor = nodeCursor->next){
             os << *(nodeCursor->p);
-            os << Cluster::POINT_CLUSTER_ID_DELIM << rand() % 5 << endl;
+            os << Cluster::POINT_CLUSTER_ID_DELIM << cluster_id - 1 << endl;
         }
         return os;
     }
@@ -502,7 +520,7 @@ namespace Clustering {
 
     // Static id generator method
     // TODO currently only increments the cluster id values
-    // TODO Doesn't hand removed clusters
+    // TODO Doesn't handle removed clusters
     unsigned int Cluster::cluster_id_generator(){
         return Cluster::clusterCount++;;
     }

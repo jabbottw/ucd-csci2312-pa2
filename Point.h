@@ -22,6 +22,8 @@ namespace Clustering {
 
             Point(int);
 
+            Point(int, int);
+
             Point(int, double *);
 
             Point(const Point &);               // Copy Constructor
