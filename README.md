@@ -547,7 +547,7 @@ Point myPoint;            // Calls Point::Point()
 Point myOtherPoint(5, 3, 0); // Calls three-argument constructor Point::Point(double, double, double)
 ```
 
-See code samples below for class instantiation
+See code samples below for cluster class instantiation
 
 ```c++
     // Create array of values for each point dimension
@@ -560,6 +560,58 @@ See code samples below for class instantiation
     Cluster clstr;// = new Cluster;
     // Add point A to the cluster
     clstr.add(&A);
+```
+
+Working with the kmeans class
+    - The kmeans class contains the necessary class members for storing, processing, and evaluating k clusters from n points
+```c++
+    class kmeans {
+
+    private:
+        ClusterPtr main_cluster;                // Super cluster, used to store all of the initial points
+        ClusterPtr * clusters;                  // Head pointer for dynamic allocation of k clusters on the heap
+        PointPtr * pointArray;                  // Head pointer for dynamic allocation of k centroids on the heap
+        int k;                                  // k value (number of clusters to create)
+        static double SCORE_DIFF_THRESHOLD;     // Threshhold value to terminate looping evaluation of k clusters
+    public:
+        ...
+    };
+    
+    
+int main(void){
+
+    // Open the point file and the output file
+    // All initial points must be located in a comma seperated file where each line indicates a single points
+    //      - Dimensions are comma delimeted
+    //
+    // Example File Format:
+    //        1.3, 4.3, 0, 5.6, 7.9
+    //        2.3, 5.6, 0, 5.6, 7.9
+    //        2.4, 5.6, 0, 6.6, 7.1
+    //        ...
+    string inFileName = "/Users/julianabbott-whitley/Google_Drive/School/UCD/Current_Classes/CSCI_2312_Intermediate/ucd-csci2312-pa2/data_points.txt";
+    string outFileName = "/Users/julianabbott-whitley/Google_Drive/School/UCD/Current_Classes/CSCI_2312_Intermediate/ucd-csci2312-pa2/data_clusters";
+
+    // Specify the number of clusters to create
+    int k = 4;
+    // Create a kmeans class object
+    kmeans km(k);
+    // load all points from file location into main cluster within kmeans object
+    km.load_main_cluster_from_file(inFileName);
+    // select k centroids
+    km.pick_K_point_arr();
+    // Create k cluster objects
+    km.create_k_clusters();
+    // Load all points from main cluster into each individual cluster based on the closest point to centroid distance
+    km.load_initial_points_into_k_clusters();
+    // Run kmeans algorithm and determine final clusters
+    km.process_kmeans();
+
+    // Output each cluster file
+    for (int i = 0; i < k; i++) {
+        string ofName = outFileName + "_" + to_string(i) + ".txt";
+        km.write_cluster_to_file(ofName, i);
+    }
 ```
 
 Compiler information:
