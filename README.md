@@ -540,11 +540,26 @@ namespace Clustering {
 }
 ```
 
-We can _instantiate_, or create an instance of, our class anywhere in the rest of our code by calling any of the constructors we have defined:
+We can _instantiate_, or create an instance of our point class anywhere in the rest of our code by calling any of the constructors we have defined:
 
 ```c++ 
 Point myPoint;            // Calls Point::Point()
 Point myOtherPoint(5, 3, 0); // Calls three-argument constructor Point::Point(double, double, double)
+```
+
+See code samples below for class instantiation
+
+```c++
+    // Create array of values for each point dimension
+    double aDimensions[3] = {5,5,5};
+    // Create a new point object with the specified dimensions
+    Point A(3, aDimensions);
+    // Utilize the point copy constructor
+    Point A_copy(A);
+    // Create a cluster object
+    Cluster clstr;// = new Cluster;
+    // Add point A to the cluster
+    clstr.add(&A);
 ```
 
 Compiler information:
