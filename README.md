@@ -5,7 +5,7 @@ Kmeans algorithm class development and implementation
 
 /*****
  * KMeans Class Development
- * Cluster Class and 3D point class
+ * Cluster Class and n-dimensional point class
  * Created by Julian Abbott-Whitley 8/30/2015
  * CSCI 2312 Intermediate Programming
  * University of Colorado Denver
@@ -121,7 +121,7 @@ namespace Clustering {
 }
 #endif // CLUSTERING_POINT_H
 ```
-Below is the source code for <tt>Point.h</tt>
+Below is the source code for <tt>Cluster.h</tt>
 
 ```c++
 //
