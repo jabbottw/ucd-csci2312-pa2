@@ -4,6 +4,7 @@ Kmeans algorithm class development and implementation
 
 
 /*****
+ * KMeans Class Development
  * Cluster Class and 3D point class
  * Created by Julian Abbott-Whitley 8/30/2015
  * CSCI 2312 Intermediate Programming
@@ -15,14 +16,21 @@ _working with objects_
 
 * * *
 
-Point class for creating and working with points in three dimensional space
+Cluster Class
+    - Contains one public inner class: Move
+    Provides encapsulation of an important two-step operation, removing a point from one cluster and adding it to another 
+Point class
+Kmeans class
+ 
 
 Included C++ files:
 <tt>Point.h</tt>
 <tt>Point.cpp</tt>
 <tt>Cluster.h</tt>
 <tt>Cluster.cpp</tt>
-<tt>pa1.cpp</tt>
+<tt>kmeans.h</tt>
+<tt>kmeans.cpp</tt>
+<tt>pa3_main.cpp</tt>
 
 Below is the source code for <tt>Point.h</tt>
 
