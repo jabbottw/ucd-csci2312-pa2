@@ -12,13 +12,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="00c4045f-f9b1-401d-81f6-4c2afc75ea6b" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Clustering.cpp" afterPath="$PROJECT_DIR$/Clustering.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Clustering.h" afterPath="$PROJECT_DIR$/Clustering.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Point.cpp" afterPath="$PROJECT_DIR$/Point.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Point.h" afterPath="$PROJECT_DIR$/Point.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/kmeans.cpp" afterPath="$PROJECT_DIR$/kmeans.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/kmeans.h" afterPath="$PROJECT_DIR$/kmeans.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pa3_main.cpp" afterPath="$PROJECT_DIR$/pa3_main.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ucd-csci2312-pa2.iws" />
@@ -44,7 +39,7 @@
         <entry file="file://$PROJECT_DIR$/pa2_functionality_test.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="33" column="11" selection-start-line="33" selection-start-column="11" selection-end-line="33" selection-end-column="11" />
+              <caret line="91" column="0" selection-start-line="91" selection-start-column="0" selection-end-line="93" selection-end-column="18" />
               <folding>
                 <element signature="e#149#168#0" expanded="true" />
               </folding>
@@ -52,11 +47,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pa3_main.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="pa3_main.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pa3_main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="30" column="45" selection-start-line="30" selection-start-column="45" selection-end-line="30" selection-end-column="45" />
+            <state vertical-scroll-proportion="0.67536235">
+              <caret line="24" column="13" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
               <folding>
                 <element signature="e#149#168#0" expanded="true" />
               </folding>
@@ -79,8 +74,8 @@
       <file leaf-file-name="Clustering.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Clustering.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.814815">
-              <caret line="125" column="17" selection-start-line="125" selection-start-column="17" selection-end-line="125" selection-end-column="17" />
+            <state vertical-scroll-proportion="-8.444445">
+              <caret line="141" column="29" selection-start-line="3" selection-start-column="0" selection-end-line="141" selection-end-column="29" />
               <folding>
                 <element signature="e#112#130#0" expanded="true" />
               </folding>
@@ -104,17 +99,17 @@
         <entry file="file://$PROJECT_DIR$/Point.h">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+              <caret line="0" column="6" selection-start-line="0" selection-start-column="6" selection-end-line="0" selection-end-column="6" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="kmeans.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="kmeans.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/kmeans.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.36477986">
-              <caret line="243" column="84" selection-start-line="243" selection-start-column="84" selection-end-line="243" selection-end-column="84" />
+            <state vertical-scroll-proportion="-4.0">
+              <caret line="259" column="49" selection-start-line="259" selection-start-column="49" selection-end-line="259" selection-end-column="49" />
               <folding>
                 <element signature="e#55#72#0" expanded="true" />
               </folding>
@@ -126,7 +121,7 @@
         <entry file="file://$PROJECT_DIR$/kmeans.h">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="51" column="0" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+              <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
               <folding>
                 <element signature="e#112#131#0" expanded="true" />
               </folding>
@@ -147,10 +142,10 @@
         <option value="$PROJECT_DIR$/pa3_main.h" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/Clustering.h" />
-        <option value="$PROJECT_DIR$/Point.h" />
         <option value="$PROJECT_DIR$/Point.cpp" />
         <option value="$PROJECT_DIR$/kmeans.h" />
         <option value="$PROJECT_DIR$/Clustering.cpp" />
+        <option value="$PROJECT_DIR$/Point.h" />
         <option value="$PROJECT_DIR$/kmeans.cpp" />
         <option value="$PROJECT_DIR$/pa3_main.cpp" />
       </list>
@@ -347,7 +342,13 @@
       <option name="project" value="LOCAL" />
       <updated>1446748299546</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="fixed bugs in &quot;calculate closest Centroid function&quot;. Resolved issues with inf value beta calculations. Resolved issues with centroid calculations and interCluster Edges calculations. On occasions, a cluster would end up with zero points, causing the cluster to create an infinite value during the betaCV calculations.">
+      <created>1447635739545</created>
+      <option name="number" value="00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1447635739545</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -361,7 +362,7 @@
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32850242" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17063493" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39452496" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3993559" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3993559" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -418,19 +419,20 @@
     <MESSAGE value="Kmeans header and implementation file&#10;updated cluster class and necessary functions for kmeans&#10;updated logic error in sorting aspect of add point for cluster class" />
     <MESSAGE value="updated cmoputation methods and qc methods for kmeans" />
     <MESSAGE value="fixed bugs in &quot;calculate closest Centroid function&quot;. Resolved issues with inf value beta calculations." />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed bugs in &quot;calculate closest Centroid function&quot;. Resolved issues with inf value beta calculations." />
+    <MESSAGE value="fixed bugs in &quot;calculate closest Centroid function&quot;. Resolved issues with inf value beta calculations. Resolved issues with centroid calculations and interCluster Edges calculations. On occasions, a cluster would end up with zero points, causing the cluster to create an infinite value during the betaCV calculations." />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed bugs in &quot;calculate closest Centroid function&quot;. Resolved issues with inf value beta calculations. Resolved issues with centroid calculations and interCluster Edges calculations. On occasions, a cluster would end up with zero points, causing the cluster to create an infinite value during the betaCV calculations." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/kmeans.cpp</url>
-          <line>234</line>
+          <line>233</line>
           <option name="timeStamp" value="161" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/kmeans.cpp</url>
-          <line>239</line>
+          <line>238</line>
           <option name="timeStamp" value="165" />
         </line-breakpoint>
       </breakpoints>
@@ -796,20 +798,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Point.h">
+    <entry file="file://$PROJECT_DIR$/Clustering.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pa2_functionality_test.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="33" column="11" selection-start-line="33" selection-start-column="11" selection-end-line="33" selection-end-column="11" />
+        <state vertical-scroll-proportion="-3.925926">
+          <caret line="87" column="18" selection-start-line="87" selection-start-column="18" selection-end-line="87" selection-end-column="18" />
           <folding>
-            <element signature="e#149#168#0" expanded="true" />
+            <element signature="e#55#74#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -824,52 +818,60 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/kmeans.h">
+    <entry file="file://$PROJECT_DIR$/Point.h">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="51" column="0" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
-          <folding>
-            <element signature="e#112#131#0" expanded="true" />
-          </folding>
+          <caret line="0" column="6" selection-start-line="0" selection-start-column="6" selection-end-line="0" selection-end-column="6" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Clustering.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.814815">
-          <caret line="125" column="17" selection-start-line="125" selection-start-column="17" selection-end-line="125" selection-end-column="17" />
+        <state vertical-scroll-proportion="-8.444445">
+          <caret line="141" column="29" selection-start-line="3" selection-start-column="0" selection-end-line="141" selection-end-column="29" />
           <folding>
             <element signature="e#112#130#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Clustering.cpp">
+    <entry file="file://$PROJECT_DIR$/kmeans.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.925926">
-          <caret line="87" column="18" selection-start-line="87" selection-start-column="18" selection-end-line="87" selection-end-column="18" />
+        <state vertical-scroll-proportion="-4.0">
+          <caret line="259" column="49" selection-start-line="259" selection-start-column="49" selection-end-line="259" selection-end-column="49" />
           <folding>
-            <element signature="e#55#74#0" expanded="true" />
+            <element signature="e#55#72#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pa3_main.cpp">
+    <entry file="file://$PROJECT_DIR$/pa2_functionality_test.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="30" column="45" selection-start-line="30" selection-start-column="45" selection-end-line="30" selection-end-column="45" />
+          <caret line="91" column="0" selection-start-line="91" selection-start-column="0" selection-end-line="93" selection-end-column="18" />
           <folding>
             <element signature="e#149#168#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/kmeans.cpp">
+    <entry file="file://$PROJECT_DIR$/kmeans.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.36477986">
-          <caret line="243" column="84" selection-start-line="243" selection-start-column="84" selection-end-line="243" selection-end-column="84" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
           <folding>
-            <element signature="e#55#72#0" expanded="true" />
+            <element signature="e#112#131#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pa3_main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.67536235">
+          <caret line="24" column="13" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
+          <folding>
+            <element signature="e#149#168#0" expanded="true" />
           </folding>
         </state>
       </provider>

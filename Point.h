@@ -1,4 +1,4 @@
-// A 3-dimensional point class!
+// A n-dimensional point class!
 // Coordinates are double-precision floating point.
 #ifndef CLUSTERING_POINT_H
 #define CLUSTERING_POINT_H

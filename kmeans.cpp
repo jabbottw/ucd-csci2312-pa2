@@ -1,7 +1,6 @@
 //
 // Created by Julian Abbott-Whitley on 10/16/15.
 //
-#include <math.h>
 #include <vector>
 #include <sstream>
 #include <iomanip>
@@ -241,6 +240,7 @@ namespace Clustering {
                     // determine the closest centroid
                     closestCentroid = this->get_closest_centroid(nPtr->p);
                     // if centroid not of current cluster
+                    // Contains a conditional check to ensure that all clusters have atleast one point
                     if (closestCentroid != i and this->clusters[i]->getSize() > 1) {
                         // perform move(point, current, other)
                         Cluster::Move m(nPtr->p, this->clusters[i], this->clusters[closestCentroid]);
