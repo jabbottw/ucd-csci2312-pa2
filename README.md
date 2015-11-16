@@ -1,5 +1,6 @@
-# ucd-csci2312-pa2
+# ucd-csci2312-pa3
 Cluster Class and Point Class
+Kmeans algorithm class development and implementation
 
 
 /*****
