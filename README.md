@@ -614,6 +614,43 @@ int main(void){
     }
 ```
 
+*** Clustering Algorithm ***
+Create a cluster point_space (the rest OPTIONAL) with __release_points set to true
+Open data file and read in points into point_space
+Pick k points to serve as initial centroids
+Create k-1 empty clusters (the rest OPTIONAL) with __release_points set to false
+Set the centroids of the the k clusters to the k points that were picked
+Create double score, double scoreDiff
+Set scoreDiff = SCORE_DIFF_THRESHOLD + 1
+---------------------------------------
+loop until scoreDiff < SCORE_DIFF_THRESHOLD
+    loop through all clusters
+        loop through all points
+            find the min distance(point, centroid)
+            if centroid not of current cluster
+                perform move(point, current, other)
+    loop through all clusters
+        if centroid invalid
+            compute and set valid to true
+    compute new clustering score
+    compute absolute difference and set scoreDiff
+---------------------------------------
+write out the clustering results to a file
+(OPTIONAL) move all points back to point_space by setting all other centroids to infinity
+delete all clusters
+
+*** Cluster Scoring ***
+BetaCV = \frac{\frac{D_{in}}{P_{in}}}{\frac{D_{out}}{P_{out}}}  where
+D_{in}=\frac{1}{2}\sum\limits_{i=1}^k D(C_{1}, C_{1}) is the sum of the intra-cluster distances, 
+D_{out} = \sum\limits_{i=1}^k D(C_{i}, \overline{C_{i}}) is the sum of the inter-cluster distances (Hint: Programmatically, it might be easier to use the equivalent formula D_{out} = \sum\limits_{i=1}^{k-1} \sum\limits_{j>i}D(C_{i}, C_{j})),
+P_{in} = \sum\limits_{i=1}^k{\binom{size_{i} }{2} } is the number of distinct (intra-) cluster edges, and
+P_{out} = \sum\limits_{i=1}^{k-1}\sum\limits_{j=i+1}^{k} size_{i} size_{j} is the number of the distinct inter-cluster edges. 
+D_{in}\left(C_1,\:C_2\right) is the sum of the distances between all pairs of points with one point in cluster C_1 and the other in cluster C_2,
+\overline{C_{i}} stands of "all clusters but C_{i}",  and
+size_{i} is the size of cluster C_{i}.
+See the Cluster class for the required methods to implement computeClusteringScore.
+
+
 **** Kmeans evaluation results ****
 Below are a few samople outputs from the k-means algorithm. Graphics were created using python libraries.
 
