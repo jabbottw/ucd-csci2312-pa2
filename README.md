@@ -660,6 +660,7 @@ delete all clusters
 
 
 **** Kmeans evaluation results ****
+
 Below are a few samople outputs from the k-means algorithm. Graphics were created using python libraries.
 
 1000 3-dimensional points evaluated with k = 3
