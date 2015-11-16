@@ -640,11 +640,22 @@ write out the clustering results to a file
 delete all clusters
 
 *** Cluster Scoring Parameters ***
+
 ![alt tag](https://github.com/jabbottw/ucd-csci2312-pa2/blob/master/cluster_scoring/beta.png)
+
+
 ![alt tag](https://github.com/jabbottw/ucd-csci2312-pa2/blob/master/cluster_scoring/din.png)
+
+
 ![alt tag](https://github.com/jabbottw/ucd-csci2312-pa2/blob/master/cluster_scoring/dout.png)
+
+
 ![alt tag](https://github.com/jabbottw/ucd-csci2312-pa2/blob/master/cluster_scoring/dout_alt.png)
+
+
 ![alt tag](https://github.com/jabbottw/ucd-csci2312-pa2/blob/master/cluster_scoring/pin.png)
+
+
 ![alt tag](https://github.com/jabbottw/ucd-csci2312-pa2/blob/master/cluster_scoring/pout.png)
 
 
