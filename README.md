@@ -614,6 +614,9 @@ int main(void){
     }
 ```
 
+:::Kmeans evaluation results:::
+
+![alt tag](https://raw.github.com/jabbottw/ucd-csci2312-pa2/blob/master/kmeans_results/1000_points_3_clusters.png)
 
 
 Compiler information:
