@@ -614,10 +614,20 @@ int main(void){
     }
 ```
 
-:::Kmeans evaluation results:::
+**** Kmeans evaluation results ****
+Below are a few samople outputs from the k-means algorithm. Graphics were created using python libraries.
 
+1000 3-dimensional points evaluated with k = 3
 ![alt tag](https://github.com/jabbottw/ucd-csci2312-pa2/blob/master/kmeans_results/1000_points_3_clusters.png)
 
+1000 3-dimensional points evaluated with k = 4
+![alt tag](https://github.com/jabbottw/ucd-csci2312-pa2/blob/master/kmeans_results/1000_points_4_clusters.png)
+
+300 3-dimensional points evaluated with k = 3
+![alt tag](https://github.com/jabbottw/ucd-csci2312-pa2/blob/master/kmeans_results/300_points_3_clusters.png)
+
+300 3-dimensional points evaluated with k = 4
+![alt tag](https://github.com/jabbottw/ucd-csci2312-pa2/blob/master/kmeans_results/300_points_4_clusters.png)
 
 Compiler information:
 
