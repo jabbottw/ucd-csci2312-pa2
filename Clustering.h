@@ -61,7 +61,7 @@ namespace Clustering {
 
             // Class tester methods
             void printPointAddresses();
-            string clean_string(string str);
+            string clean_string(string str, int &);
             void printCluster();
 
             // Overlaoded member operators

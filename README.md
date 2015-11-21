@@ -69,13 +69,13 @@ namespace Clustering {
 
             // Mutator methods
             void setDimSize(double);
-            void setDimValueN(int, double);
+            void setValue(int, double);
             void setAllDimValues(double []);
 
 
             // Accessor methods
-            double getDimSize() const;
-            double getDimension(int) const;
+            double getDims() const;
+            double getValue(int) const;
             double *getAllDimensions() const;
 
             double *getDimPointer() const;

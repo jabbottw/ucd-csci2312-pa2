@@ -5,8 +5,11 @@
 #include <iostream>
 #include <sstream>
 #include <Vector>
+#include <algorithm>
 #include "Point.h"
 #include "Clustering.h"
+#include "RemoveFromEmptyEx.h"
+#include "OutOfBoundsEx.h"
 
 using namespace std;
 
@@ -86,7 +89,7 @@ namespace Clustering {
      * Class centroids function implementations
      */
     void Cluster::set_centroid(const Point & pnt){
-        this->__centroid.setDimSize(pnt.getDimSize());
+        this->__centroid.setDimSize(pnt.getDims());
         this->__centroid.setAllDimValues(pnt.getAllDimensions());
     }
 
@@ -95,16 +98,24 @@ namespace Clustering {
     }
 
     void Cluster::compute_centroid(){
-        if (this->points!=nullptr) {
-            int dimSize = this->points->p->getDimSize();
-            PointPtr centroid = new Point(dimSize, 0);
-            int count = 0;
-            int tLoops = 0;
-            for (LNodePtr nPtr = this->points; nPtr != nullptr; nPtr = nPtr->next) {
-                *centroid += *nPtr->p / this->getSize();
+        try {
+                if (this->points==nullptr) {
+                    throw RemoveFromEmptyEx("ComputerCentroidErr", "nullptr exception");
+                } else if (!this->size) {
+                    throw RemoveFromEmptyEx("ComputerCentroidErr", "Cluster contains zero points");
+                } else {
+                    int dimSize = this->points->p->getDims();
+                    PointPtr centroid = new Point(dimSize, 0);
+                    int count = 0;
+                    int tLoops = 0;
+                    for (LNodePtr nPtr = this->points; nPtr != nullptr; nPtr = nPtr->next) {
+                        *centroid += *nPtr->p / this->getSize();
+                    }
+                    this->set_centroid(*centroid);
+                }
+            } catch (RemoveFromEmptyEx rmEx){
+                cout << rmEx;
             }
-            this->set_centroid(*centroid);
-        }
     }
 
     void Cluster::validate_centroid(int valid){
@@ -262,21 +273,27 @@ namespace Clustering {
     const PointPtr & Cluster::remove(const PointPtr & pntPointer){
         LNodePtr nodeCursor;
         LNodePtr previousNode = nullptr;
-
-        for (nodeCursor = this->points; nodeCursor != nullptr;  nodeCursor = nodeCursor->next) {
-            if (nodeCursor->p == pntPointer) {
-                if(previousNode == nullptr){
-                    this->points = this->points->next;
-                    --(this->size);
-                } else {
-                    previousNode->next = nodeCursor->next;
-                    --(this->size);
-                }
-            } else {
-                previousNode = nodeCursor;
+        try {
+            if (this->points == nullptr or this->size == 0){
+                throw RemoveFromEmptyEx("Remove_from_EmptyClusterErr", "Nullpointer or empty cluster");
             }
+            for (nodeCursor = this->points; nodeCursor != nullptr; nodeCursor = nodeCursor->next) {
+                if (nodeCursor->p == pntPointer) {
+                    if (previousNode == nullptr) {
+                        this->points = this->points->next;
+                        --(this->size);
+                    } else {
+                        previousNode->next = nodeCursor->next;
+                        --(this->size);
+                    }
+                } else {
+                    previousNode = nodeCursor;
+                }
+            }
+            return pntPointer;
+        } catch (RemoveFromEmptyEx rmErr){
+            cout << rmErr;
         }
-        return pntPointer;
     }
 
     /*
@@ -455,13 +472,14 @@ namespace Clustering {
      */
     istream &operator>>(istream &is, Cluster &clstr){
 
+        int pntCount;
         string inputData;
         string cleanedData;
         while(getline(is, inputData)){
-            cleanedData = clstr.clean_string(inputData);
+            cleanedData = clstr.clean_string(inputData, pntCount);
             if (cleanedData.length() != 0){
                 stringstream sData(cleanedData);
-                PointPtr ptr = new Point;
+                PointPtr ptr = new Point(pntCount);
                 sData >> *ptr;
                 clstr.add(ptr);
             }
@@ -479,13 +497,13 @@ namespace Clustering {
         int currentPointDim;
         int nextPointDim;
         for (LNodePtr nodeCursor = this->points; nodeCursor != nullptr;  nodeCursor = nodeCursor->next){
-            currentPointDim = (nodeCursor->p->getDimSize());
+            currentPointDim = (nodeCursor->p->getDims());
             cout << *nodeCursor->p;
             if (nodeCursor->next == nullptr){
                 // do nothing
             } else {
                 cout << ", ";
-                nextPointDim = nodeCursor->next->p->getDimSize();
+                nextPointDim = nodeCursor->next->p->getDims();
             }
         }
         cout << "]" << endl;
@@ -507,14 +525,15 @@ namespace Clustering {
      * Clean string data from input stream
      * Remove all tabs and check for empty lines
      */
-    string Cluster::clean_string(string str)
+    string Cluster::clean_string(string str, int &pntCount)
     {
-        int s=str.find_first_not_of(" \t");
-        int e=str.find_last_not_of(" \t");
+        int s = str.find_first_not_of(" \t");
+        int e = str.find_last_not_of(" \t");
 
-        if (s!=-1 && e!=-1)
-            return str.substr(s, e-s+1);
-
+        if (s != -1 && e != -1) {
+            pntCount = std::count(str.begin(), str.end(), ',') + 1;
+            return str.substr(s, e - s + 1);
+        }
         return "";
     }
 

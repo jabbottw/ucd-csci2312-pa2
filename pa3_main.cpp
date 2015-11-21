@@ -29,7 +29,7 @@ int main(void){
     km.create_k_clusters();
 
     km.load_initial_points_into_k_clusters();
-    km.process_kmeans();
+    //km.process_kmeans();
 
     // Output each cluster file
     for (int i = 0; i < k; i++) {

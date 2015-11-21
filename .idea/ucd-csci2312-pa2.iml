@@ -5,11 +5,17 @@
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Clustering.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Clustering.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/DimensionalityMismatchEx.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/DimensionalityMismatchEx.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/OutOfBoundsEx.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/OutOfBoundsEx.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Point.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Point.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/RemoveFromEmptyEx.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/RemoveFromEmptyEx.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/kmeans.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/kmeans.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/pa3_main.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/pa4_main.cpp" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -5,6 +5,8 @@
 #include <sstream>
 #include <iomanip>
 #include "Point.h"
+#include "DimensionalityMismatchEx.h"
+#include "OutOfBoundsEx.h"
 
 using namespace std;
 
@@ -29,9 +31,6 @@ namespace Clustering {
     // Constructor
     // Initializes the point class and sets the number of dimensions()
     Point::Point(int dimSize, double *dimValues) {
-        /* TODO
-         * Q: How should we best verify that the dim_values array matches the dim value?
-         * */
         this->dimSize = dimSize;
         this->dimValues = new double[dimSize];
         for (int i = 0; i < dimSize; ++i) {
@@ -44,9 +43,6 @@ namespace Clustering {
     // Initializes the point class and sets the number of dimensions()
     // Sets each dimension equal to the default value
     Point::Point(int dimSize, int defaultVal) {
-        /* TODO
-         * Q: How should we best verify that the dim_values array matches the dim value?
-         * */
         this->dimSize = dimSize;
         this->dimValues = new double[dimSize];
         for (int i = 0; i < dimSize; ++i) {
@@ -56,7 +52,7 @@ namespace Clustering {
     }
 
     // Overloaded copy constructor
-    Point::Point(const Point &pnt) : dimSize(pnt.getDimSize()), dimValues(pnt.getAllDimensions()) { }
+    Point::Point(const Point &pnt) : dimSize(pnt.getDims()), dimValues(pnt.getAllDimensions()) { }
 
 
     // Overloaded assignment operator
@@ -65,9 +61,18 @@ namespace Clustering {
             return *this;
         }
         else {
-            delete this->dimValues;
-            this->dimValues = pnt.getAllDimensions();
-            this->dimValues = pnt.getDimPointer();
+            try {
+                if (this->dimSize != pnt.getDims()) {
+                    throw DimensionalityMismatchEx("PointAssignmentOp",
+                            "The two points have different dimensionality");
+                }
+                delete this->dimValues;
+                this->dimValues = pnt.getAllDimensions();
+                this->dimValues = pnt.getDimPointer();
+
+            } catch (DimensionalityMismatchEx dimErr) {
+                cout << dimErr;
+            }
         }
         return *this;
     }
@@ -84,11 +89,11 @@ namespace Clustering {
 // Overloaded addition and subtraction operators
 // Computes a dimension wise addition and subtraction
     const Point operator+(const Point &A, const Point &B) {
-        int dimSize = A.getDimSize();
+        int dimSize = A.getDims();
         Point C(dimSize);
         try {
             for (int i = 0; i < dimSize; i++) {
-                C.setDimValueN(i, (A.getDimension(i) + B.getDimension(i)));
+                C.setValue(i, (A.getValue(i) + B.getValue(i)));
             }
             return C;
         }
@@ -99,22 +104,26 @@ namespace Clustering {
 
     Point &operator+=(Point &A, const Point &B) {
         try {
-            for (int i = 0; i < A.getDimSize(); i++) {
-                A.setDimValueN(i, A.getDimension(i) + B.getDimension(i));
+            if (A.getDims() != B.getDims()){
+                throw DimensionalityMismatchEx("Point+=OpErr", "Points have different dimensionality");
+            }
+            for (int i = 0; i < A.getDims(); i++) {
+                A.setValue(i, A.getValue(i) + B.getValue(i));
             }
             return A;
         }
-        catch (int e) {
+        catch (DimensionalityMismatchEx dimErr) {
+            cout << dimErr;
             return A;
         }
     }
 
     const Point operator-(const Point &A, const Point &B) {
-        int dimSize = A.getDimSize();
+        int dimSize = A.getDims();
         Point C(dimSize);
         try {
             for (int i = 0; i < dimSize; i++) {
-                C.setDimValueN(i, (A.getDimension(i) - B.getDimension(i)));
+                C.setValue(i, (A.getValue(i) - B.getValue(i)));
             }
             return C;
         }
@@ -125,12 +134,16 @@ namespace Clustering {
 
     Point &operator-=(Point &A, const Point &B) {
         try {
-            for (int i = 0; i < A.getDimSize(); i++) {
-                A.setDimValueN(i, A.getDimension(i) - B.getDimension(i));
+            if (A.getDims() != B.getDims()){
+                throw DimensionalityMismatchEx("Point-=OpErr", "Points have different dimensionality");
+            }
+            for (int i = 0; i < A.getDims(); i++) {
+                A.setValue(i, A.getValue(i) - B.getValue(i));
             }
             return A;
         }
-        catch (int e) {
+        catch (DimensionalityMismatchEx dimErr) {
+            cout << dimErr;
             return A;
         }
     }
@@ -140,7 +153,7 @@ namespace Clustering {
     const Point Point::operator*(double x) const {
         Point pnt(*this);
         try {
-            for (int i = 0; i < pnt.getDimSize(); i++) {
+            for (int i = 0; i < pnt.getDims(); i++) {
                 pnt.dimValues[i] *= x;
             }
             return pnt;
@@ -163,7 +176,7 @@ namespace Clustering {
         Point pnt(*this);
         if (x) {
             try {
-                for (int i = 0; i < pnt.getDimSize(); i++) {
+                for (int i = 0; i < pnt.getDims(); i++) {
                     pnt.dimValues[i] /= x;
                 }
                 return pnt;
@@ -193,84 +206,129 @@ namespace Clustering {
 // Overloaded comparison operators
 // Check that point A and point B have the same dim size and dimension values
     bool operator==(const Point &A, const Point &B) {
-        if (A.getDimSize() != B.getDimSize()) {
+        try {
+            if (A.getDims() != B.getDims()) {
+                throw DimensionalityMismatchEx("Point==OpErr", "Points have different dimensionality");
+            }
+            for (int i = 0; i < A.getDims(); ++i) {
+                if (A.getValue(i) != B.getValue(i)) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (DimensionalityMismatchEx dimErr){
+            cout << dimErr;
             return false;
         }
-        for (int i = 0; i < A.getDimSize(); ++i) {
-            if (A.getDimension(i) != B.getDimension(i)) {
-                return false;
-            }
-        }
-        return true;
     }
 
 // Check that point A and point B do not have the same dim size and dimension values
     bool operator!=(const Point &A, const Point &B) {
-        if (A.getDimSize() != B.getDimSize()) {
-            return true;
-        }
-        for (int i = 0; i < A.getDimSize(); ++i) {
-            if (A.getDimension(i) != B.getDimension(i)) {
+        try {
+            if (A.getDims() != B.getDims()) {
+                throw DimensionalityMismatchEx("Point!=OpErr", "Points have different dimensionality");
+            }
+            if (A.getDims() != B.getDims()) {
                 return true;
             }
-        }
-        return false;
-    }
-
-// Check if the dimensions values of point A are less than that of point B, (assumes lexicographic order)
-    bool operator<(const Point &A, const Point &B) {
-        if (A.getDimSize() == B.getDimSize()) {
-            for (int i = 0; i < A.getDimSize(); ++i) {
-                if ((A.getDimension(i) == B.getDimension(i))) {
-                    // check next dim
-                }
-                else if (A.getDimension(i) < B.getDimension(i)) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        }
-        return false;
-    }
-
-// Check if the dimensions values of point A are greater than that of point B, (assumes lexicographic order)
-    bool operator>(const Point &A, const Point &B) {
-        if (A.getDimSize() == B.getDimSize()) {
-            for (int i = 0; i < A.getDimSize(); ++i) {
-                if (A.getDimension(i) > B.getDimension(i)) {
+            for (int i = 0; i < A.getDims(); ++i) {
+                if (A.getValue(i) != B.getValue(i)) {
                     return true;
                 }
             }
             return false;
+        } catch (DimensionalityMismatchEx dimErr){
+            cout << dimErr;
+            return false;
         }
-        return false;
+    }
+
+// Check if the dimensions values of point A are less than that of point B, (assumes lexicographic order)
+    bool operator<(const Point &A, const Point &B) {
+        try {
+            if (A.getDims() != B.getDims()) {
+                throw DimensionalityMismatchEx("Point<OpErr", "Points have different dimensionality");
+            }
+            if (A.getDims() == B.getDims()) {
+                for (int i = 0; i < A.getDims(); ++i) {
+                    if ((A.getValue(i) == B.getValue(i))) {
+                        // check next dim
+                    }
+                    else if (A.getValue(i) < B.getValue(i)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+            return false;
+        } catch (DimensionalityMismatchEx dimErr){
+            cout << dimErr;
+            return false;
+        }
+    }
+
+// Check if the dimensions values of point A are greater than that of point B, (assumes lexicographic order)
+    bool operator>(const Point &A, const Point &B) {
+        try {
+            if (A.getDims() != B.getDims()) {
+                throw DimensionalityMismatchEx("Point>OpErr", "Points have different dimensionality");
+            }
+            if (A.getDims() == B.getDims()) {
+                for (int i = 0; i < A.getDims(); ++i) {
+                    if (A.getValue(i) > B.getValue(i)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            return false;
+        } catch (DimensionalityMismatchEx dimErr){
+            cout << dimErr;
+            return false;
+        }
     }
 
 // Check if the dimensions values of point A are greater than or equal to that of point B, (assumes lexicographic order)
     bool operator>=(const Point &A, const Point &B) {
-        if (A.getDimSize() == B.getDimSize()) {
-            for (int i = 0; i < A.getDimSize(); ++i) {
-                if (A.getDimension(i) < B.getDimension(i)) {
-                    return false;
-                }
+        try {
+            if (A.getDims() != B.getDims()) {
+                throw DimensionalityMismatchEx("Point>=OpErr", "Points have different dimensionality");
             }
-            return true;
+            if (A.getDims() == B.getDims()) {
+                for (int i = 0; i < A.getDims(); ++i) {
+                    if (A.getValue(i) < B.getValue(i)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        } catch (DimensionalityMismatchEx dimErr){
+            cout << dimErr;
+            return false;
         }
-        return false;
     }
 
 // Check if the dimensions values of point A are greater than that of point B, (assumes lexicographic order)
     bool operator<=(const Point &A, const Point &B) {
-        if (A.getDimSize() == B.getDimSize()) {
-            for (int i = 0; i < A.getDimSize(); ++i) {
-                if (A.getDimension(i) > B.getDimension(i)) {
-                    return false;
-                }
+        try {
+            if (A.getDims() != B.getDims()) {
+                throw DimensionalityMismatchEx("Point<=OpErr", "Points have different dimensionality");
             }
-            return true;
+            if (A.getDims() == B.getDims()) {
+                for (int i = 0; i < A.getDims(); ++i) {
+                    if (A.getValue(i) > B.getValue(i)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        } catch (DimensionalityMismatchEx dimErr){
+            cout << dimErr;
+            return false;
         }
-        return false;
     }
 
 // Mutator methods
@@ -279,9 +337,17 @@ namespace Clustering {
         this->dimSize = newDim;
     }
 
-    void Point::setDimValueN(int n, double m) {
+    void Point::setValue(int n, double m) {
         if (this->dimValues != nullptr) {
-            this->dimValues[n] = m;
+            try{
+                if (n < 0 or n >= this->dimSize){
+                    throw OutOfBoundsEx("PointSet[]OpErr", "Points have different dimensionality");
+                }
+                this->dimValues[n] = m;
+            } catch (OutOfBoundsEx obErr){
+                cout << obErr;
+            }
+
         }
     }
 
@@ -290,33 +356,40 @@ namespace Clustering {
             this->dimValues = new double[this->dimSize];
         }
         for (int i = 0; i < this->dimSize; ++i) {
-            this->dimValues[i] = newDimValues[i];
+            this->setValue(i, newDimValues[i]);
         }
     }
 
 // Accessor's
 // Return the current values of private member variables
 
-    double Point::getDimSize() const {
+    double Point::getDims() const {
         return this->dimSize;
     }
 
 /*
  * Return dimension n value
  */
-    double Point::getDimension(int n) const {
+    double Point::getValue(int n) const {
         double dimValue;
-        dimValue = this->dimValues[n];
-        return dimValue;
+        try {
+            if (n < 0 or n >= this->dimSize) {
+                throw OutOfBoundsEx("PointGet[]OpErr", "Points have different dimensionality");
+            }
+            dimValue = this->dimValues[n];
+            return dimValue;
+        } catch (OutOfBoundsEx obErr){
+            cout << obErr;
+        }
     }
 
 /*
  * Return a copy of all the dimension values
  */
-    double *Point::getAllDimensions() const {
+    double * Point::getAllDimensions() const {
         double *dimValues = new double[this->dimSize];
         for (int i = 0; i < this->dimSize; i++) {
-            dimValues[i] = this->dimValues[i];
+            dimValues[i] = this->getValue(i);
         }
         return dimValues;
     }
@@ -328,9 +401,9 @@ namespace Clustering {
 
     ostream &operator<<(ostream &os, const Point &pnt) {
         Point p(pnt);
-        int d = p.getDimSize();
+        int d = p.getDims();
         for (int i = 0; i < d; ++i) {
-            os << setprecision(1) << fixed <<  p.getDimension(i);
+            os << setprecision(1) << fixed << p.getValue(i);
             if (i == d - 1) {
                 //do nothing
             } else {
@@ -346,30 +419,39 @@ namespace Clustering {
         while(getline(is, dimN, ',')){
             pointDims.push_back(stod(dimN));
         }
-        double * dimValues = &pointDims[0];
-        pnt.setDimSize(pointDims.size());
-        pnt.setAllDimValues(dimValues);
+        try {
+            if (pointDims.size() != pnt.getDims()){
+                throw DimensionalityMismatchEx("Point>>OpErr", "Points have different dimensionality");
+            }
+            double *dimValues = &pointDims[0];
+            pnt.setDimSize(pointDims.size());
+            pnt.setAllDimValues(dimValues);
+        } catch (DimensionalityMismatchEx dimErr){
+            cout << dimErr;
+        }
         return is;
     }
 
 
     // Auxiliary methods
-    double Point::distanceTo(const Point &B) const { // TODO throw  exception
-        if (this->dimSize == B.dimSize) {
-            double *dimDiff = new double[this->dimSize];
+    double Point::distanceTo(const Point &B) const {
+        try {
+            if (this->getDims() != B.getDims()) {
+                throw DimensionalityMismatchEx("PointDistanceToOpErr", "Points have different dimensionality");
+            }
+            double * dimDiff = new double[this->dimSize];
             double dimSum = 0;
             for (int i = 0; i < this->dimSize; ++i) {
-                dimDiff[i] = pow((B.getDimension(i) - this->getDimension(i)), 2);
+                dimDiff[i] = pow((B.getValue(i) - this->getValue(i)), 2);
                 dimSum += dimDiff[i];
             }
             delete[] dimDiff;
             return sqrt(dimSum);
+        } catch (DimensionalityMismatchEx dimErr){
+            cout << dimErr;
+            return 0;
         }
-        return 0;
     }
-
-
-
 }
 
 
