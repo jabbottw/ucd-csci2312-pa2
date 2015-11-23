@@ -15,8 +15,8 @@ namespace Clustering {
     // Initializes the point to (0.0, 0.0, 0.0)
 
     const char Point::POINT_VALUE_DELIM = ',';
-    const int Point::DEBUGG = 1;
-    const int Point::BASE_INDEX = 0;
+    const int Point::DEBUGG = 0;
+    const int Point::BASE_INDEX = 1;
 
     Point::Point() {
         this->dimSize = 0;
