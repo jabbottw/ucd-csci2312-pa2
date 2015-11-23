@@ -3,6 +3,8 @@
 //
 #include <iostream>
 #include <string>
+#include <sstream>
+#include <set>
 #include "RemoveFromEmptyEx.h"
 
 using namespace std;
@@ -30,9 +32,14 @@ namespace Clustering{
     int RemoveFromEmptyEx::getLine() {return this->line;}
 
     ostream &operator<<(ostream & os, RemoveFromEmptyEx & rmErr) {
-        string output = "Line: " + to_string(rmErr.getLine()) + " -- Exception Name: {" + rmErr.getName() + "} -- " +
-                rmErr.getErr() + "\n";
-        os << output;
+        os.width(4);
+        os << rmErr.getLine() << ": ";
+        os.width(65);
+        os.setf(ios::left, ios::adjustfield);
+        os << rmErr.getName() << "  ";
+        os.setf(ios::right, ios::adjustfield);
+        os << rmErr.getErr() << "\n";
+        os.flush();
     }
 
 }

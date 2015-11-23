@@ -43,9 +43,14 @@ namespace Clustering {
     }
 
     ostream &operator<<(ostream & os, DimensionalityMismatchEx & dimErr) {
-        string output = "Line: " + to_string(dimErr.getLine()) + " -- Exception Name: {" + dimErr.getName() + "} -- " +
-                        dimErr.getErr() + "\n";
-        os << output;
+        os.width(4);
+        os << dimErr.getLine() << ": ";
+        os.width(65);
+        os.setf(ios::left, ios::adjustfield);
+        os << dimErr.getName() << "  ";
+        os.setf(ios::right, ios::adjustfield);
+        os << dimErr.getErr() << "\n";
+        os.flush();
     }
 }
 #include "DimensionalityMismatchEx.h"

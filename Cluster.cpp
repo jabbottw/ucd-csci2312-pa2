@@ -7,7 +7,7 @@
 #include <Vector>
 #include <algorithm>
 #include "Point.h"
-#include "Clustering.h"
+#include "Cluster.h"
 #include "RemoveFromEmptyEx.h"
 #include "OutOfBoundsEx.h"
 
@@ -100,9 +100,9 @@ namespace Clustering {
     void Cluster::compute_centroid(){
         try {
                 if (this->points==nullptr) {
-                    throw RemoveFromEmptyEx("ComputerCentroidErr", "nullptr exception");
+                    throw RemoveFromEmptyEx("ComputeCentroidErr", "nullptr exception", __LINE__);
                 } else if (!this->size) {
-                    throw RemoveFromEmptyEx("ComputerCentroidErr", "Cluster contains zero points");
+                    throw RemoveFromEmptyEx("ComputeCentroidErr", "Cluster contains zero points", __LINE__);
                 } else {
                     int dimSize = this->points->p->getDims();
                     PointPtr centroid = new Point(dimSize, 0);
@@ -233,26 +233,35 @@ namespace Clustering {
                 }
                 break;
             default:
-                nPrev = nullptr;
+                nPrev = this->points;
                 // Iterate through the linked list and place point appropriately
-                for (nCursor = this->points; nCursor != nullptr; nCursor = nCursor->next){
-                    // If nPrev is null and the input point is smaller than the cursor, place point at begining of list
-                    if ((nPrev == nullptr) and (*nPntr->p < *nCursor->p)){
-                        nPntr->next = nCursor;
+                for (nCursor = this->points->next; nCursor != nullptr; nCursor = nCursor->next){
+                    // If input point is smaller than (1st point), place point at beginning of list
+                    if (*nPntr->p < *this->points->p){
+                        nPntr->next = nPrev;
                         this->points = nPntr;
                         break;
-                    // If the points have equal dim values, then sort by address, (descending order)
-                    } else if ((*nPntr->p == *nCursor->p) and (nPntr->p > nCursor->p)) {
+                    // If the input point is less than current point, insert point before cursor
+                    } else if (*nPntr->p < *nCursor->p ) {
                         nPrev->next = nPntr;
                         nPntr->next = nCursor;
-                    // If the input point is greater than the node cursor, place point in between prevCursor and nodeCursor
-                    } else if (*nPntr->p < *nCursor->p ){
-                        nPrev->next = nPntr;
-                        nPntr->next = nCursor;
+                        break;
+                    // If the input point is equal to the current point, insert point before cursor
+                    } else if (*nPntr->p == *nCursor->p) {
+                        // Make sure that point addresses are ordered in ascending order as well
+                        if (nPntr->p < nCursor->p) {
+                            // Place input point before cursor
+                            nPrev->next = nPntr;
+                            nPntr->next = nCursor;
+                        } else {
+                            // Place input point after cursor
+                            nPntr->next = nCursor->next;
+                            nCursor->next = nPntr;
+                        }
                         break;
                     // Continue looping
                     } else {
-                        nPrev = nCursor;
+                        nPrev = nPrev->next;
                     }
 
                 }
@@ -275,16 +284,18 @@ namespace Clustering {
         LNodePtr previousNode = nullptr;
         try {
             if (this->points == nullptr or this->size == 0){
-                throw RemoveFromEmptyEx("Remove_from_EmptyClusterErr", "Nullpointer or empty cluster");
+                throw RemoveFromEmptyEx("Remove_from_EmptyClusterErr", "Nullpointer or empty cluster", __LINE__);
             }
             for (nodeCursor = this->points; nodeCursor != nullptr; nodeCursor = nodeCursor->next) {
                 if (nodeCursor->p == pntPointer) {
                     if (previousNode == nullptr) {
                         this->points = this->points->next;
                         --(this->size);
+                        break;
                     } else {
                         previousNode->next = nodeCursor->next;
                         --(this->size);
+                        break;
                     }
                 } else {
                     previousNode = nodeCursor;
@@ -315,20 +326,10 @@ namespace Clustering {
      * all instances of point address 0xABC123 are removed
      */
     Cluster & Cluster::operator-=(const Point &rhs){
-        LNodePtr nodeCursor;
-        LNodePtr previousNode = nullptr;
-
-        for (nodeCursor = this->points; nodeCursor != nullptr;  nodeCursor = nodeCursor->next) {
-            if (nodeCursor->p == &rhs) {
-                if(previousNode == nullptr){
-                    this->points = this->points->next;
-                    --(this->size);
-                } else {
-                    previousNode->next = nodeCursor->next;
-                    --(this->size);
-                }
-            } else {
-                previousNode = nodeCursor;
+        for (LNodePtr nodeCursor = this->points; nodeCursor != nullptr;  nodeCursor = nodeCursor->next) {
+            if (*nodeCursor->p == rhs){
+                this->remove(nodeCursor->p);
+                break;
             }
         }
         return *this;
@@ -343,18 +344,15 @@ namespace Clustering {
                 this->add(rhsNodeCursor->p);
             }
         } else {
-            LNodePtr thisNodeCursor;
             // iterate through all the nodes within the RHS cluster
-            for (LNodePtr rhsNodeCursor = rhs.points; rhsNodeCursor != nullptr; rhsNodeCursor = rhsNodeCursor->next) {
-                thisNodeCursor = this->points;
-                // iterate through the Nodes in THIS cluster
-                // While the current node->point for THIS cluster is not equal to the  current rhsCluster node->point
-                // Continue looping through THIS cluster nodes
-                // Stop at the end of the linked list or once a match is found
-                while (thisNodeCursor->p != rhsNodeCursor->p and thisNodeCursor->next != nullptr) {
-                    thisNodeCursor = thisNodeCursor->next;
+            for (LNodePtr rhsNodeCursor = rhs.points; rhsNodeCursor != nullptr; rhsNodeCursor = rhsNodeCursor->next){
+                bool addPoint = true;
+                for (LNodePtr thisNodeCursor = this->points; thisNodeCursor != nullptr; thisNodeCursor = thisNodeCursor->next){
+                    if (thisNodeCursor->p == rhsNodeCursor->p){
+                        addPoint = false;
+                    }
                 }
-                if (thisNodeCursor != nullptr) {
+                if (addPoint){
                     this->add(rhsNodeCursor->p);
                 }
             }

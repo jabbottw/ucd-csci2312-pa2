@@ -15,6 +15,8 @@ namespace Clustering {
     // Initializes the point to (0.0, 0.0, 0.0)
 
     const char Point::POINT_VALUE_DELIM = ',';
+    const int Point::DEBUGG = 1;
+    const int Point::BASE_INDEX = 0;
 
     Point::Point() {
         this->dimSize = 0;
@@ -25,15 +27,15 @@ namespace Clustering {
     // Initializes the point class and sets the number of dimensions()
     Point::Point(int dimSize) {
         this->dimSize = dimSize;
-        this->dimValues = new double[dimSize];
+        this->dimValues = new double[dimSize + Point::BASE_INDEX];
     }
 
     // Constructor
     // Initializes the point class and sets the number of dimensions()
     Point::Point(int dimSize, double *dimValues) {
         this->dimSize = dimSize;
-        this->dimValues = new double[dimSize];
-        for (int i = 0; i < dimSize; ++i) {
+        this->dimValues = new double[dimSize + Point::BASE_INDEX];
+        for (int i = 0 + Point::BASE_INDEX; i < dimSize + Point::BASE_INDEX; ++i) {
             this->dimValues[i] = dimValues[i];
         }
 
@@ -44,8 +46,8 @@ namespace Clustering {
     // Sets each dimension equal to the default value
     Point::Point(int dimSize, int defaultVal) {
         this->dimSize = dimSize;
-        this->dimValues = new double[dimSize];
-        for (int i = 0; i < dimSize; ++i) {
+        this->dimValues = new double[dimSize + Point::BASE_INDEX];
+        for (int i = 0 + Point::BASE_INDEX; i < dimSize + Point::BASE_INDEX; ++i) {
             this->dimValues[i] = defaultVal;
         }
 
@@ -64,35 +66,55 @@ namespace Clustering {
             try {
                 if (this->dimSize != pnt.getDims()) {
                     throw DimensionalityMismatchEx("PointAssignmentOp",
-                            "The two points have different dimensionality");
+                            "The two points have different dimensionality", __LINE__);
                 }
                 delete this->dimValues;
                 this->dimValues = pnt.getAllDimensions();
                 this->dimValues = pnt.getDimPointer();
 
             } catch (DimensionalityMismatchEx dimErr) {
-                cout << dimErr;
+                if (Point::DEBUGG){
+                    cout << dimErr;
+                }
             }
         }
         return *this;
     }
 
-// Destructor
-// No dynamic allocation, so nothing to do; if omitted, generated automatically
+    // Destructor
+    // No dynamic allocation, so nothing to do; if omitted, generated automatically
     Point::~Point() {
+        // TODO this doesn't make sense
         //delete [] this->dimValues;
-        //free(this->dimValues);
-        //cout << "Point class destroyed" << endl;
     }
 
 
-// Overloaded addition and subtraction operators
-// Computes a dimension wise addition and subtraction
+    // Subscript operator
+    double & Point::operator[](int i){
+        double n = 0;
+        try{
+            if (i < 0 or i >= this->dimSize + Point::BASE_INDEX){
+                throw OutOfBoundsEx("Subscript[]OpErr", "Out of Bounds Error");
+            } else {
+                return this->dimValues[i];
+            }
+        } catch (OutOfBoundsEx obErr){
+            if (Point::DEBUGG){
+                cout << obErr;
+            }
+            return n;
+        }
+        return n;
+    }
+
+
+    // Overloaded addition and subtraction operators
+    // Computes a dimension wise addition and subtraction
     const Point operator+(const Point &A, const Point &B) {
         int dimSize = A.getDims();
         Point C(dimSize);
         try {
-            for (int i = 0; i < dimSize; i++) {
+            for (int i = 0 + Point::BASE_INDEX; i < dimSize + Point::BASE_INDEX; i++) {
                 C.setValue(i, (A.getValue(i) + B.getValue(i)));
             }
             return C;
@@ -105,9 +127,9 @@ namespace Clustering {
     Point &operator+=(Point &A, const Point &B) {
         try {
             if (A.getDims() != B.getDims()){
-                throw DimensionalityMismatchEx("Point+=OpErr", "Points have different dimensionality");
+                throw DimensionalityMismatchEx("Point+=OpErr", "Points have different dimensionality", __LINE__);
             }
-            for (int i = 0; i < A.getDims(); i++) {
+            for (int i = 0  + Point::BASE_INDEX; i < A.getDims() + Point::BASE_INDEX; i++) {
                 A.setValue(i, A.getValue(i) + B.getValue(i));
             }
             return A;
@@ -122,7 +144,7 @@ namespace Clustering {
         int dimSize = A.getDims();
         Point C(dimSize);
         try {
-            for (int i = 0; i < dimSize; i++) {
+            for (int i = 0 + Point::BASE_INDEX; i < dimSize + Point::BASE_INDEX; i++) {
                 C.setValue(i, (A.getValue(i) - B.getValue(i)));
             }
             return C;
@@ -135,9 +157,9 @@ namespace Clustering {
     Point &operator-=(Point &A, const Point &B) {
         try {
             if (A.getDims() != B.getDims()){
-                throw DimensionalityMismatchEx("Point-=OpErr", "Points have different dimensionality");
+                throw DimensionalityMismatchEx("Point-=OpErr", "Points have different dimensionality", __LINE__);
             }
-            for (int i = 0; i < A.getDims(); i++) {
+            for (int i = 0 + Point::BASE_INDEX; i < A.getDims() + Point::BASE_INDEX; i++) {
                 A.setValue(i, A.getValue(i) - B.getValue(i));
             }
             return A;
@@ -148,12 +170,12 @@ namespace Clustering {
         }
     }
 
-// Overloaded multiplication operators
-// Computes a factor wise multiplication on each dimension
+    // Overloaded multiplication operators
+    // Computes a factor wise multiplication on each dimension
     const Point Point::operator*(double x) const {
         Point pnt(*this);
         try {
-            for (int i = 0; i < pnt.getDims(); i++) {
+            for (int i = 0 + Point::BASE_INDEX; i < pnt.getDims() + Point::BASE_INDEX; i++) {
                 pnt.dimValues[i] *= x;
             }
             return pnt;
@@ -164,19 +186,19 @@ namespace Clustering {
     }
 
     Point &Point::operator*=(double x) {
-        for (int i = 0; i < this->dimSize; i++) {
+        for (int i = 0 + Point::BASE_INDEX; i < this->dimSize + Point::BASE_INDEX; i++) {
             this->dimValues[i] *= x;
         }
         return *this;
     }
 
-// Overloaded division operators
-// Computes a factor wise division on each dimension
+    // Overloaded division operators
+    // Computes a factor wise division on each dimension
     const Point Point::operator/(double x) const {
         Point pnt(*this);
         if (x) {
             try {
-                for (int i = 0; i < pnt.getDims(); i++) {
+                for (int i = 0 + Point::BASE_INDEX; i < pnt.getDims() + Point::BASE_INDEX; i++) {
                     pnt.dimValues[i] /= x;
                 }
                 return pnt;
@@ -191,7 +213,7 @@ namespace Clustering {
     Point &Point::operator/=(double x) {
         if (x) {
             try {
-                for (int i = 0; i < this->dimSize; i++) {
+                for (int i = 0 + Point::BASE_INDEX; i < this->dimSize + Point::BASE_INDEX; i++) {
                     this->dimValues[i] /= x;
                 }
                 return *this;
@@ -203,14 +225,14 @@ namespace Clustering {
         return *this;
     }
 
-// Overloaded comparison operators
-// Check that point A and point B have the same dim size and dimension values
+    // Overloaded comparison operators
+    // Check that point A and point B have the same dim size and dimension values
     bool operator==(const Point &A, const Point &B) {
         try {
             if (A.getDims() != B.getDims()) {
-                throw DimensionalityMismatchEx("Point==OpErr", "Points have different dimensionality");
+                throw DimensionalityMismatchEx("Point==OpErr", "Points have different dimensionality", __LINE__);
             }
-            for (int i = 0; i < A.getDims(); ++i) {
+            for (int i = 0 + Point::BASE_INDEX; i < A.getDims() + Point::BASE_INDEX; ++i) {
                 if (A.getValue(i) != B.getValue(i)) {
                     return false;
                 }
@@ -222,16 +244,16 @@ namespace Clustering {
         }
     }
 
-// Check that point A and point B do not have the same dim size and dimension values
+    // Check that point A and point B do not have the same dim size and dimension values
     bool operator!=(const Point &A, const Point &B) {
         try {
             if (A.getDims() != B.getDims()) {
-                throw DimensionalityMismatchEx("Point!=OpErr", "Points have different dimensionality");
+                throw DimensionalityMismatchEx("Point!=OpErr", "Points have different dimensionality", __LINE__);
             }
             if (A.getDims() != B.getDims()) {
                 return true;
             }
-            for (int i = 0; i < A.getDims(); ++i) {
+            for (int i = 0 + Point::BASE_INDEX; i < A.getDims() + Point::BASE_INDEX; ++i) {
                 if (A.getValue(i) != B.getValue(i)) {
                     return true;
                 }
@@ -243,14 +265,14 @@ namespace Clustering {
         }
     }
 
-// Check if the dimensions values of point A are less than that of point B, (assumes lexicographic order)
+    // Check if the dimensions values of point A are less than that of point B, (assumes lexicographic order)
     bool operator<(const Point &A, const Point &B) {
         try {
             if (A.getDims() != B.getDims()) {
-                throw DimensionalityMismatchEx("Point<OpErr", "Points have different dimensionality");
+                throw DimensionalityMismatchEx("Point<OpErr", "Points have different dimensionality", __LINE__);
             }
             if (A.getDims() == B.getDims()) {
-                for (int i = 0; i < A.getDims(); ++i) {
+                for (int i = 0 + Point::BASE_INDEX; i < A.getDims() + Point::BASE_INDEX; ++i) {
                     if ((A.getValue(i) == B.getValue(i))) {
                         // check next dim
                     }
@@ -268,14 +290,14 @@ namespace Clustering {
         }
     }
 
-// Check if the dimensions values of point A are greater than that of point B, (assumes lexicographic order)
+    // Check if the dimensions values of point A are greater than that of point B, (assumes lexicographic order)
     bool operator>(const Point &A, const Point &B) {
         try {
             if (A.getDims() != B.getDims()) {
-                throw DimensionalityMismatchEx("Point>OpErr", "Points have different dimensionality");
+                throw DimensionalityMismatchEx("Point>OpErr", "Points have different dimensionality", __LINE__);
             }
             if (A.getDims() == B.getDims()) {
-                for (int i = 0; i < A.getDims(); ++i) {
+                for (int i = 0 + Point::BASE_INDEX; i < A.getDims() + Point::BASE_INDEX; ++i) {
                     if (A.getValue(i) > B.getValue(i)) {
                         return true;
                     }
@@ -289,14 +311,14 @@ namespace Clustering {
         }
     }
 
-// Check if the dimensions values of point A are greater than or equal to that of point B, (assumes lexicographic order)
+    // Check if the dimensions values of point A are greater than or equal to that of point B, (assumes lexicographic order)
     bool operator>=(const Point &A, const Point &B) {
         try {
             if (A.getDims() != B.getDims()) {
                 throw DimensionalityMismatchEx("Point>=OpErr", "Points have different dimensionality");
             }
             if (A.getDims() == B.getDims()) {
-                for (int i = 0; i < A.getDims(); ++i) {
+                for (int i = 0 + Point::BASE_INDEX; i < A.getDims() + Point::BASE_INDEX; ++i) {
                     if (A.getValue(i) < B.getValue(i)) {
                         return false;
                     }
@@ -310,14 +332,14 @@ namespace Clustering {
         }
     }
 
-// Check if the dimensions values of point A are greater than that of point B, (assumes lexicographic order)
+    // Check if the dimensions values of point A are greater than that of point B, (assumes lexicographic order)
     bool operator<=(const Point &A, const Point &B) {
         try {
             if (A.getDims() != B.getDims()) {
                 throw DimensionalityMismatchEx("Point<=OpErr", "Points have different dimensionality");
             }
             if (A.getDims() == B.getDims()) {
-                for (int i = 0; i < A.getDims(); ++i) {
+                for (int i = 0 + Point::BASE_INDEX; i < A.getDims() + Point::BASE_INDEX; ++i) {
                     if (A.getValue(i) > B.getValue(i)) {
                         return false;
                     }
@@ -331,8 +353,8 @@ namespace Clustering {
         }
     }
 
-// Mutator methods
-// Change the values of private member variables
+    // Mutator methods
+    // Change the values of private member variables
     void Point::setDimSize(double newDim) {
         this->dimSize = newDim;
     }
@@ -340,12 +362,14 @@ namespace Clustering {
     void Point::setValue(int n, double m) {
         if (this->dimValues != nullptr) {
             try{
-                if (n < 0 or n >= this->dimSize){
-                    throw OutOfBoundsEx("PointSet[]OpErr", "Points have different dimensionality");
+                if (n < 0 or n >= this->dimSize + Point::BASE_INDEX){
+                    throw OutOfBoundsEx("PointSet[]OpErr", "Points have different dimensionality", __LINE__);
                 }
                 this->dimValues[n] = m;
             } catch (OutOfBoundsEx obErr){
-                cout << obErr;
+                if (Point::DEBUGG){
+                    cout << obErr;
+                }
             }
 
         }
@@ -353,42 +377,45 @@ namespace Clustering {
 
     void Point::setAllDimValues(double *newDimValues) {
         if (this->dimValues == nullptr) {
-            this->dimValues = new double[this->dimSize];
+            this->dimValues = new double[this->dimSize + Point::BASE_INDEX];
         }
-        for (int i = 0; i < this->dimSize; ++i) {
-            this->setValue(i, newDimValues[i]);
+        for (int i = 0 + Point::BASE_INDEX; i < this->dimSize + Point::BASE_INDEX; ++i) {
+            this->setValue(i, newDimValues[i - Point::BASE_INDEX]);
         }
     }
 
-// Accessor's
-// Return the current values of private member variables
-
+    // Accessor's
+    // Return the current values of private member variables
     double Point::getDims() const {
         return this->dimSize;
     }
 
-/*
- * Return dimension n value
- */
+    /*
+     * Return dimension n value
+     */
     double Point::getValue(int n) const {
         double dimValue;
         try {
-            if (n < 0 or n >= this->dimSize) {
-                throw OutOfBoundsEx("PointGet[]OpErr", "Points have different dimensionality");
+            if (n < 0 or n >= (this->dimSize + Point::BASE_INDEX)) {
+                throw OutOfBoundsEx("PointGet[]OpErr", "Out of Bounds Error");
+            } else {
+                dimValue = this->dimValues[n];
+                return dimValue;
             }
-            dimValue = this->dimValues[n];
-            return dimValue;
         } catch (OutOfBoundsEx obErr){
-            cout << obErr;
+            if (Point::DEBUGG){
+                cout << obErr;
+            }
+            return 0;
         }
     }
 
-/*
- * Return a copy of all the dimension values
- */
+    /*
+     * Return a copy of all the dimension values
+     */
     double * Point::getAllDimensions() const {
-        double *dimValues = new double[this->dimSize];
-        for (int i = 0; i < this->dimSize; i++) {
+        double *dimValues = new double[this->dimSize + Point::BASE_INDEX];
+        for (int i = 0 + Point::BASE_INDEX; i < this->dimSize + Point::BASE_INDEX; i++) {
             dimValues[i] = this->getValue(i);
         }
         return dimValues;
@@ -402,9 +429,9 @@ namespace Clustering {
     ostream &operator<<(ostream &os, const Point &pnt) {
         Point p(pnt);
         int d = p.getDims();
-        for (int i = 0; i < d; ++i) {
-            os << setprecision(1) << fixed << p.getValue(i);
-            if (i == d - 1) {
+        for (int i = 0 + Point::BASE_INDEX; i < d + Point::BASE_INDEX; ++i) {
+            os << setprecision(20) << fixed << p.getValue(i);
+            if (i == (d - 1 + Point::BASE_INDEX)) {
                 //do nothing
             } else {
                 os << Point::POINT_VALUE_DELIM;
@@ -437,11 +464,11 @@ namespace Clustering {
     double Point::distanceTo(const Point &B) const {
         try {
             if (this->getDims() != B.getDims()) {
-                throw DimensionalityMismatchEx("PointDistanceToOpErr", "Points have different dimensionality");
+                throw DimensionalityMismatchEx("PointDistanceToOpErr", "Points have different dimensionality", __LINE__);
             }
             double * dimDiff = new double[this->dimSize];
             double dimSum = 0;
-            for (int i = 0; i < this->dimSize; ++i) {
+            for (int i = 0 + Point::BASE_INDEX; i < this->dimSize + Point::BASE_INDEX; ++i) {
                 dimDiff[i] = pow((B.getValue(i) - this->getValue(i)), 2);
                 dimSum += dimDiff[i];
             }

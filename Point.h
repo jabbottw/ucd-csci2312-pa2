@@ -11,6 +11,8 @@ namespace Clustering {
     class Point {
 
         static const char POINT_VALUE_DELIM;
+        static const int DEBUGG;
+        static const int BASE_INDEX;
 
         private:
             int dimSize;
@@ -53,8 +55,7 @@ namespace Clustering {
             Point &operator/=(double);
             const Point operator*(double) const;
             const Point operator/(double) const;
-
-            //double &operator[](int index) { return values[index - 1]; } // TODO out-of-bds?
+            double &operator[](int index);
 
             // Friends
             friend Point &operator+=(Point &, const Point &);

@@ -3,10 +3,16 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Clustering.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Clustering.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Cluster.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Cluster.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ClusteringTests.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ClusteringTests.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/DimensionalityMismatchEx.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/DimensionalityMismatchEx.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ErrorContext.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ErrorContext.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/MyErrorContext.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/MyErrorContext.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/OutOfBoundsEx.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/OutOfBoundsEx.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Point.cpp" isTestSource="false" />

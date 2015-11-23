@@ -37,8 +37,13 @@ namespace Clustering {
     }
 
     ostream &operator<<(ostream & os, OutOfBoundsEx & obErr) {
-        string output = "Line: " + to_string(obErr.getLine()) + " -- Exception Name: {" + obErr.getName() + "} -- " +
-                        obErr.getErr() + "\n";
-        os << output;
+        os.width(4);
+        os << obErr.getLine() << ": ";
+        os.width(65);
+        os.setf(ios::left, ios::adjustfield);
+        os << obErr.getName() << "  ";
+        os.setf(ios::right, ios::adjustfield);
+        os << obErr.getErr() << "\n";
+        os.flush();
     }
 }

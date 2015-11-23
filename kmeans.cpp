@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <fstream>
 #include <cmath>
-#include "Clustering.h"
+#include "Cluster.h"
 #include "Point.h"
 #include "kmeans.h"
 

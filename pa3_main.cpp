@@ -10,7 +10,7 @@
 #include <iomanip>
 #include <sstream>
 #include "Point.h"
-#include "Clustering.h"
+#include "Cluster.h"
 #include "kmeans.h"
 
 using namespace std;
@@ -22,7 +22,7 @@ int main(void){
     string inFileName = "/Users/julianabbott-whitley/Google_Drive/School/UCD/Current_Classes/CSCI_2312_Intermediate/ucd-csci2312-pa2/data_points.txt";
     string outFileName = "/Users/julianabbott-whitley/Google_Drive/School/UCD/Current_Classes/CSCI_2312_Intermediate/ucd-csci2312-pa2/data_clusters";
 
-    int k = 4;
+    int k = 3;
     kmeans km(k);
     km.load_main_cluster_from_file(inFileName);
     km.pick_K_point_arr();

@@ -9,7 +9,7 @@
 #include <fstream>
 #include <iomanip>
 #include "Point.h"
-#include "Clustering.h"
+#include "Cluster.h"
 
 using namespace std;
 using namespace Clustering;

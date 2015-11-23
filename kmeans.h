@@ -5,7 +5,7 @@
 #ifndef CLUSTERING_KMEANS_H
 #define CLUSTERING_KMEANS_H
 #include <iostream>
-#include "Clustering.h"
+#include "Cluster.h"
 
 
 using namespace std;
