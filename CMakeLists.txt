@@ -4,7 +4,7 @@ project(ucd_csci2312_pa2)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(SOURCE_FILES
-        main.cpp
+        pa4_main.cpp
         Cluster.cpp
         Cluster.h
         Point.cpp

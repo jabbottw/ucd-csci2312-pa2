@@ -21,7 +21,7 @@
       <sourceFolder url="file://$MODULE_DIR$/RemoveFromEmptyEx.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/kmeans.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/kmeans.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/pa4_main.cpp" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
