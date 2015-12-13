@@ -11,7 +11,7 @@
 #include <sstream>
 #include "Point.h"
 #include "Cluster.h"
-#include "kmeans.h"
+#include "KMeans.h"
 
 using namespace std;
 using namespace Clustering;

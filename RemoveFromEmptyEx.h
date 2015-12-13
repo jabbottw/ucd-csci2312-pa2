@@ -11,6 +11,8 @@ using namespace std;
 namespace Clustering{
 
     class RemoveFromEmptyEx{
+        static const int EX_ON;
+
     private:
         string name;
         string errMessage;

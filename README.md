@@ -28,8 +28,8 @@ Included C++ files:
 <tt>Point.cpp</tt>
 <tt>Cluster.h</tt>
 <tt>Cluster.cpp</tt>
-<tt>kmeans.h</tt>
-<tt>kmeans.cpp</tt>
+<tt>KMeans.h</tt>
+<tt>KMeans.cpp</tt>
 <tt>pa3_main.cpp</tt>
 
 Below is the source code for <tt>Point.h</tt>
@@ -74,7 +74,7 @@ namespace Clustering {
 
 
             // Accessor methods
-            double getDims() const;
+            double getDimSize() const;
             double getValue(int) const;
             double *getAllDimensions() const;
 
@@ -150,8 +150,8 @@ namespace Clustering {
     class Cluster {
 
         private:
-            int size;
-            LNodePtr points;
+            int __size;
+            LNodePtr __points;
             unsigned int __id;
             Point __centroid;
             bool centroidValidity;
@@ -174,17 +174,17 @@ namespace Clustering {
             // Member get functions
             int getSize();
             LNodePtr getPoints();
-            const unsigned int get_cluster_id();
+            const unsigned int getId();
 
             // Centroid member functions
-            void set_centroid(const Point &);
-            const Point get_centroid();
-            void compute_centroid(); // Need to watch out for overloading
+            void setCentroid(const Point &);
+            const Point getCentroid();
+            void computeCentroid(); // Need to watch out for overloading
             void validate_centroid(int);
-            bool check_centroid_validity();
+            bool isCentroidValid();
 
             //Kmeans type functions
-            void pickPoints(int k, PointPtr *pointArray);
+            void pickPoints(int k, PointPtr *__initCentroids);
 
 
             // Class tester methods
@@ -199,19 +199,19 @@ namespace Clustering {
             Cluster &operator-=(const Cluster &rhs); // (asymmetric) difference
 
             // Kmeans functions
-            // This is the sum of the distances between every two points in the cluster.
-            // Hint: This can be done in a double loop through the points of the cluster.
+            // This is the sum of the distances between every two __points in the cluster.
+            // Hint: This can be done in a double loop through the __points of the cluster.
             // However, this will count every distance twice, so you need to divide the sum by 2 before returning it.
             double intraClusterDistance() const;
             // This returns the number of distinct point pairs, or edges, in a cluster.
-            // (That is, every two distinct points have an imaginary edge between them.
-            // Its length is the distance between the two points.) This is simply size * (size - 1) / 2,
-            // where size is the size of the cluster.
-            int intraClusterEdges();
+            // (That is, every two distinct __points have an imaginary edge between them.
+            // Its length is the distance between the two __points.) This is simply __size * (__size - 1) / 2,
+            // where __size is the __size of the cluster.
+            int getClusterEdges();
 
-            //Same thing as (intraClusterDistance), but between two clusters.
+            //Same thing as (intraClusterDistance), but between two __clusters.
             friend double interClusterDistance(const Cluster &c1, const Cluster &c2);
-            // Same thing as (getClusterEdges), but between two clusters.
+            // Same thing as (getClusterEdges), but between two __clusters.
             friend double interClusterEdges(const Cluster &c1, const Cluster &c2);
 
             // Friends
@@ -233,9 +233,9 @@ namespace Clustering {
             static unsigned int cluster_id_generator();
 
         /*
-         * Inner nested class to move points from one cluster to another
+         * Inner nested class to move __points from one cluster to another
          * Constructor: Creates a Move object which contains the point to move, the 'from' cluster and the 'to' cluster
-         * Two methods used for managing the execution of moving the points
+         * Two methods used for managing the execution of moving the __points
          */
         class Move {
         private:
@@ -270,7 +270,7 @@ namespace Clustering {
 #endif //CLUSTERING_CLUSTER_H
 ```
 
-Below is the source code for the kmeans.h file
+Below is the source code for the KMeans.h file
 
 ```c++
 #include <vector>
@@ -280,40 +280,40 @@ Below is the source code for the kmeans.h file
 #include <cmath>
 #include "Clustering.h"
 #include "Point.h"
-#include "kmeans.h"
+#include "KMeans.h"
 
 using namespace std;
 
 namespace Clustering {
 
-    double kmeans::SCORE_DIFF_THRESHOLD = 0.005;
+    double KMeans::SCORE_DIFF_THRESHOLD = 0.005;
 
     // Constructors
-    kmeans::kmeans() {
+    KMeans::KMeans() {
         this->k = 0;
         this->main_cluster = new Cluster;
-        this->pointArray = nullptr;
-        this->clusters = nullptr;
+        this->__initCentroids = nullptr;
+        this->__clusters = nullptr;
     }
 
-    kmeans::kmeans(int k)  {
+    KMeans::KMeans(int k)  {
         this->k = k;
         this->main_cluster = new Cluster;
-        this->pointArray = nullptr;
-        this->clusters = nullptr;
+        this->__initCentroids = nullptr;
+        this->__clusters = nullptr;
     }
 
 
     // Kmeans clustering algorithm member functions
 
     // Set the class k value
-    void kmeans::set_k_value(int k){
+    void KMeans::set_k_value(int k){
         this->k = k;
     }
 
 
     // Get k-value
-    int kmeans::get_k_value() {
+    int KMeans::get_k_value() {
         return this->k;
     }
 
@@ -321,7 +321,7 @@ namespace Clustering {
     /*
      * Load point file into main cluster
      */
-    void kmeans::load_main_cluster_from_file(string fpath){
+    void KMeans::load_main_cluster_from_file(string fpath){
         fstream inFile;
         inFile.open(fpath);
         inFile >> *(this->main_cluster);
@@ -331,32 +331,32 @@ namespace Clustering {
     /*
      * write the referenced cluster to a file
      */
-    void kmeans::write_cluster_to_file(string outFileName, int n){
+    void KMeans::write_cluster_to_file(string outFileName, int n){
         ofstream outFile;
         outFile.open(outFileName);
-        outFile << *this->clusters[n];
+        outFile << *this->__clusters[n];
         outFile.close();
     }
 
     /*
-     * load the class pointArray with the first k points from the main_cluster
+     * load the class __initCentroids with the first k __points from the main_cluster
      * Used as the initial centroid for each cluster
      */
-    void kmeans::pick_K_point_arr(){
+    void KMeans::pick_K_point_arr(){
         if (this->k){
-            this->pointArray = new PointPtr[this->k];
-            this->main_cluster->pickPoints(this->k, this->pointArray);
+            this->__initCentroids = new PointPtr[this->k];
+            this->main_cluster->pickPoints(this->k, this->__initCentroids);
         }
     }
 
     /*
-     * QC method to view the points in the class pointArray
+     * QC method to view the __points in the class __initCentroids
      */
-    void kmeans::show_K_points() {
+    void KMeans::show_K_points() {
         if (this->k){
             cout << endl << "*** Initial Centroid Points ***" << endl;
             for (int i = 0; i < this->k; i++){
-                cout << i << ": " << *this->pointArray[i] << endl;
+                cout << i << ": " << *this->__initCentroids[i] << endl;
             }
             cout << endl << endl;
         }
@@ -364,29 +364,29 @@ namespace Clustering {
     }
 
     /*
-     * Create k clusters and set the centroid for each cluster using the points in the pointsArray
-     * Load each cluster with a point from the class pointArray, since each point within the array is the cluster centroid
-     * Utilizes the Cluster::Move class to simultaneously add and remove points from the main cluster
-     * into each of the k clusters
+     * Create k __clusters and set the centroid for each cluster using the __points in the pointsArray
+     * Load each cluster with a point from the class __initCentroids, since each point within the array is the cluster centroid
+     * Utilizes the Cluster::Move class to simultaneously add and remove __points from the main cluster
+     * into each of the k __clusters
      */
-    void kmeans::create_k_clusters(){
-        if (pointArray != nullptr){
-            this->clusters = new ClusterPtr[k];
+    void KMeans::create_k_clusters(){
+        if (__initCentroids != nullptr){
+            this->__clusters = new ClusterPtr[k];
             for (int i = 0; i < k; i++) {
-                clusters[i] = new Cluster;
-                const Point p(*this->pointArray[i]);
-                this->clusters[i]->set_centroid(p);
-                Cluster::Move m(this->pointArray[i], this->main_cluster, this->clusters[i]);
+                __clusters[i] = new Cluster;
+                const Point p(*this->__initCentroids[i]);
+                this->__clusters[i]->set_centroid(p);
+                Cluster::Move m(this->__initCentroids[i], this->main_cluster, this->__clusters[i]);
                 m.perform();
             }
         }
     }
 
     /*
-     * Cycles through the main cluster and loads each point into the individual clusters
+     * Cycles through the main cluster and loads each point into the individual __clusters
      * Points are allocated based on the minimum centroid distance
      */
-    void kmeans::load_initial_points_into_k_clusters(){
+    void KMeans::load_initial_points_into_k_clusters(){
         int n=0;
         // Loop through each point in the main cluster
         for (LNodePtr nodePtr = this->main_cluster->getPoints(); nodePtr != nullptr; nodePtr = nodePtr->next){
@@ -397,7 +397,7 @@ namespace Clustering {
             this->show_K_points();
             cout << "Closest Centroid: " << n << endl << endl << "#########################" << endl << endl;*/
 
-            Cluster::Move m(nodePtr->p, this->main_cluster, this->clusters[n]);
+            Cluster::Move m(nodePtr->p, this->main_cluster, this->__clusters[n]);
             m.perform();
         }
     }
@@ -405,14 +405,14 @@ namespace Clustering {
     /*
      * Find the closest centroid for the provided point
      */
-    int kmeans::get_closest_centroid(const PointPtr pointPtr){
+    int KMeans::get_closest_centroid(const PointPtr pointPtr){
         int n = 0;
         int mDistance, nDistance;
         // Assume closest centroid is cluster zero
-        mDistance = pointPtr->distanceTo(this->clusters[0]->get_centroid());
+        mDistance = pointPtr->distanceTo(this->__clusters[0]->get_centroid());
         // Determine closest centroid
         for (int i = 0; i < this->k; i++){
-            nDistance = pointPtr->distanceTo(this->clusters[i]->get_centroid());
+            nDistance = pointPtr->distanceTo(this->__clusters[i]->get_centroid());
             if (nDistance < mDistance){
                 // Closest centroid is the centroid for point i
                 n = i;
@@ -426,19 +426,19 @@ namespace Clustering {
     /*
      * Debugging method to help qc the processing
      */
-    void kmeans::qc_K_clusters(bool show_points) {
-        if (this->clusters != nullptr) {
+    void KMeans::qc_K_clusters(bool show_points) {
+        if (this->__clusters != nullptr) {
             cout << endl << "*** QC k Clusters ***" << endl;
             for (int i = 0; i < this->k; i++) {
                 cout << "************************************************************************************" << endl << endl << endl;
-                cout << "\tCluster " << i << " Size: " << this->clusters[i]->getSize() << endl;
-                cout << "\t\tCentroid: " << this->clusters[i]->get_centroid() << endl;
+                cout << "\tCluster " << i << " Size: " << this->__clusters[i]->getSize() << endl;
+                cout << "\t\tCentroid: " << this->__clusters[i]->get_centroid() << endl;
                 if (show_points){
                     cout << "** Points **" << endl;
-                    for (LNodePtr nPtr = this->clusters[i]->getPoints() ; nPtr != nullptr; nPtr = nPtr->next){
+                    for (LNodePtr nPtr = this->__clusters[i]->getPoints() ; nPtr != nullptr; nPtr = nPtr->next){
                         cout << *nPtr->p << " ----- Closest Centroid: " << this->get_closest_centroid(nPtr->p) <<  endl;
                         for (int j = 0; j < this->k; j++){
-                            cout << "\t\t\t Distance to centroid " << j << ": " << nPtr->p->distanceTo(this->clusters[j]->get_centroid()) << endl;
+                            cout << "\t\t\t Distance to centroid " << j << ": " << nPtr->p->distanceTo(this->__clusters[j]->get_centroid()) << endl;
                         }
                     }
                 }
@@ -446,7 +446,7 @@ namespace Clustering {
         }
     }
 
-    double kmeans::computeClusteringScore(){
+    double KMeans::computeClusteringScore(){
 
         double d_in_sum = 0;
         double d_out_sum = 0;
@@ -461,12 +461,12 @@ namespace Clustering {
         double betaCV=0;
 
         for (int i = 0; i < this->k; i++){
-            d_in[i] = this->clusters[i]->intraClusterDistance();
-            p_in[i] = this->clusters[i]->intraClusterEdges();
+            d_in[i] = this->__clusters[i]->intraClusterDistance();
+            p_in[i] = this->__clusters[i]->intraClusterEdges();
             for (int j = 0; j < this->k; j++){
                 if (i != j){
-                    d_out[i] += interClusterDistance(*this->clusters[i], *this->clusters[j]);
-                    p_out[i] += interClusterEdges(*this->clusters[i], *this->clusters[j]);
+                    d_out[i] += interClusterDistance(*this->__clusters[i], *this->__clusters[j]);
+                    p_out[i] += interClusterEdges(*this->__clusters[i], *this->__clusters[j]);
                 }
             }
         }
@@ -482,49 +482,49 @@ namespace Clustering {
         return betaCV;
     }
 
-    double kmeans::calculateClusterScoreDiff(double oldScore, double newScore){
+    double KMeans::calculateClusterScoreDiff(double oldScore, double newScore){
         double sDiff = abs(oldScore - newScore);
         return sDiff;
     }
 
 
-    void kmeans::process_kmeans(){
+    void KMeans::process_kmeans(){
 
         double score1, score2, scoreDiff;
         int count = 0;
-        // loop through all clusters
+        // loop through all __clusters
         for (int i = 0; i < this->k; i++) {
-            if (!this->clusters[i]->check_centroid_validity()) {
-                this->clusters[i]->compute_centroid();
-                this->clusters[i]->validate_centroid(1);
+            if (!this->__clusters[i]->check_centroid_validity()) {
+                this->__clusters[i]->compute_centroid();
+                this->__clusters[i]->validate_centroid(1);
             }
         }
 
         score1 = this->computeClusteringScore();
-        scoreDiff = kmeans::SCORE_DIFF_THRESHOLD + 1;
+        scoreDiff = KMeans::SCORE_DIFF_THRESHOLD + 1;
         int closestCentroid;
-        while (scoreDiff > kmeans::SCORE_DIFF_THRESHOLD) {
+        while (scoreDiff > KMeans::SCORE_DIFF_THRESHOLD) {
             cout << endl <<  "Iteration " << count << " *** start *** " << endl << endl;
-            // loop through all clusters
+            // loop through all __clusters
             for (int i = 0; i < this->k; i++) {
-                // loop through all points in cluster i
-                for (LNodePtr nPtr = this->clusters[i]->getPoints(); nPtr != nullptr; nPtr = nPtr->next) {
+                // loop through all __points in cluster i
+                for (LNodePtr nPtr = this->__clusters[i]->getPoints(); nPtr != nullptr; nPtr = nPtr->next) {
                     // determine the closest centroid
                     closestCentroid = this->get_closest_centroid(nPtr->p);
                     // if centroid not of current cluster
-                    // Contains a conditional check to ensure that all clusters have atleast one point
-                    if (closestCentroid != i and this->clusters[i]->getSize() > 1) {
+                    // Contains a conditional check to ensure that all __clusters have atleast one point
+                    if (closestCentroid != i and this->__clusters[i]->getSize() > 1) {
                         // perform move(point, current, other)
-                        Cluster::Move m(nPtr->p, this->clusters[i], this->clusters[closestCentroid]);
+                        Cluster::Move m(nPtr->p, this->__clusters[i], this->__clusters[closestCentroid]);
                         m.perform();
                     }
                 }
             }
-            // loop through all clusters
+            // loop through all __clusters
             for (int i = 0; i < this->k; i++) {
-                if (!this->clusters[i]->check_centroid_validity()) {
-                    this->clusters[i]->compute_centroid();
-                    this->clusters[i]->validate_centroid(1);
+                if (!this->__clusters[i]->check_centroid_validity()) {
+                    this->__clusters[i]->compute_centroid();
+                    this->__clusters[i]->validate_centroid(1);
                 }
             }
             score2 = this->computeClusteringScore();
@@ -562,17 +562,17 @@ See code samples below for cluster class instantiation
     clstr.add(&A);
 ```
 
-Working with the kmeans class
-    - The kmeans class contains the necessary class members for storing, processing, and evaluating k clusters from n points
+Working with the KMeans class
+    - The KMeans class contains the necessary class members for storing, processing, and evaluating k __clusters from n __points
 ```c++
-    class kmeans {
+    class KMeans {
 
     private:
-        ClusterPtr main_cluster;                // Super cluster, used to store all of the initial points
-        ClusterPtr * clusters;                  // Head pointer for dynamic allocation of k clusters on the heap
-        PointPtr * pointArray;                  // Head pointer for dynamic allocation of k centroids on the heap
-        int k;                                  // k value (number of clusters to create)
-        static double SCORE_DIFF_THRESHOLD;     // Threshhold value to terminate looping evaluation of k clusters
+        ClusterPtr main_cluster;                // Super cluster, used to store all of the initial __points
+        ClusterPtr * __clusters;                  // Head pointer for dynamic allocation of k __clusters on the heap
+        PointPtr * __initCentroids;                  // Head pointer for dynamic allocation of k centroids on the heap
+        int k;                                  // k value (number of __clusters to create)
+        static double SCORE_DIFF_THRESHOLD;     // Threshhold value to terminate looping evaluation of k __clusters
     public:
         ...
     };
@@ -581,7 +581,7 @@ Working with the kmeans class
 int main(void){
 
     // Open the point file and the output file
-    // All initial points must be located in a comma seperated file where each line indicates a single points
+    // All initial __points must be located in a comma seperated file where each line indicates a single __points
     //      - Dimensions are comma delimeted
     //
     // Example File Format:
@@ -592,19 +592,19 @@ int main(void){
     string inFileName = "/Users/julianabbott-whitley/Google_Drive/School/UCD/Current_Classes/CSCI_2312_Intermediate/ucd-csci2312-pa2/data_points.txt";
     string outFileName = "/Users/julianabbott-whitley/Google_Drive/School/UCD/Current_Classes/CSCI_2312_Intermediate/ucd-csci2312-pa2/data_clusters";
 
-    // Specify the number of clusters to create
+    // Specify the number of __clusters to create
     int k = 4;
-    // Create a kmeans class object
-    kmeans km(k);
-    // load all points from file location into main cluster within kmeans object
+    // Create a KMeans class object
+    KMeans km(k);
+    // load all __points from file location into main cluster within KMeans object
     km.load_main_cluster_from_file(inFileName);
     // select k centroids
     km.pick_K_point_arr();
     // Create k cluster objects
     km.create_k_clusters();
-    // Load all points from main cluster into each individual cluster based on the closest point to centroid distance
+    // Load all __points from main cluster into each individual cluster based on the closest point to centroid distance
     km.load_initial_points_into_k_clusters();
-    // Run kmeans algorithm and determine final clusters
+    // Run KMeans algorithm and determine final __clusters
     km.process_kmeans();
 
     // Output each cluster file
@@ -616,28 +616,28 @@ int main(void){
 
 *** Clustering Algorithm ***
 Create a cluster point_space (the rest OPTIONAL) with __release_points set to true
-Open data file and read in points into point_space
-Pick k points to serve as initial centroids
-Create k-1 empty clusters (the rest OPTIONAL) with __release_points set to false
-Set the centroids of the the k clusters to the k points that were picked
+Open data file and read in __points into point_space
+Pick k __points to serve as initial centroids
+Create k-1 empty __clusters (the rest OPTIONAL) with __release_points set to false
+Set the centroids of the the k __clusters to the k __points that were picked
 Create double score, double scoreDiff
 Set scoreDiff = SCORE_DIFF_THRESHOLD + 1
 ---------------------------------------
 loop until scoreDiff < SCORE_DIFF_THRESHOLD
-    loop through all clusters
-        loop through all points
+    loop through all __clusters
+        loop through all __points
             find the min distance(point, centroid)
             if centroid not of current cluster
                 perform move(point, current, other)
-    loop through all clusters
+    loop through all __clusters
         if centroid invalid
             compute and set valid to true
     compute new clustering score
     compute absolute difference and set scoreDiff
 ---------------------------------------
 write out the clustering results to a file
-(OPTIONAL) move all points back to point_space by setting all other centroids to infinity
-delete all clusters
+(OPTIONAL) move all __points back to point_space by setting all other centroids to infinity
+delete all __clusters
 
 *** Cluster Scoring Parameters ***
 
@@ -663,16 +663,16 @@ delete all clusters
 
 Below are a few samople outputs from the k-means algorithm. Graphics were created using python libraries.
 
-1000 3-dimensional points evaluated with k = 3
+1000 3-dimensional __points evaluated with k = 3
 ![alt tag](https://github.com/jabbottw/ucd-csci2312-pa2/blob/master/kmeans_results/1000_points_3_clusters.png)
 
-1000 3-dimensional points evaluated with k = 4
+1000 3-dimensional __points evaluated with k = 4
 ![alt tag](https://github.com/jabbottw/ucd-csci2312-pa2/blob/master/kmeans_results/1000_points_4_clusters.png)
 
-300 3-dimensional points evaluated with k = 3
+300 3-dimensional __points evaluated with k = 3
 ![alt tag](https://github.com/jabbottw/ucd-csci2312-pa2/blob/master/kmeans_results/300_points_3_clusters.png)
 
-300 3-dimensional points evaluated with k = 4
+300 3-dimensional __points evaluated with k = 4
 ![alt tag](https://github.com/jabbottw/ucd-csci2312-pa2/blob/master/kmeans_results/300_points_4_clusters.png)
 
 Compiler information:
@@ -701,6 +701,6 @@ add_executable(pa1 ${SOURCE_FILES})
 
 * * *
 
-<font size="-1">ACKNOWLEDGEMENT: Modelled after CS11 Lab 1 at Caltech.</font>
+<font __size="-1">ACKNOWLEDGEMENT: Modelled after CS11 Lab 1 at Caltech.</font>
 
-<font size="-1">Some content Copyright (C) 2004-2010, California Institute of Technology.</font>
+<font __size="-1">Some content Copyright (C) 2004-2010, California Institute of Technology.</font>

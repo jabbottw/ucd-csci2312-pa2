@@ -5,7 +5,7 @@
 #include <sstream>
 #include "Point.h"
 #include "Cluster.h"
-#include "kmeans.h"
+#include "KMeans.h"
 #include "DimensionalityMismatchEx.h"
 #include "OutOfBoundsEx.h"
 #include "RemoveFromEmptyEx.h"

@@ -14,6 +14,7 @@ namespace Clustering {
         static const int DEBUGG;
         static const int BASE_INDEX;
 
+
         private:
             int dimSize;
             double *dimValues;
@@ -24,7 +25,7 @@ namespace Clustering {
 
             Point(int);
 
-            Point(int, int);
+            Point(int, double);
 
             Point(int, double *);
 
@@ -39,10 +40,9 @@ namespace Clustering {
 
 
             // Accessor methods
-            double getDims() const;
+            int getDimSize() const;
             double getValue(int) const;
             double *getAllDimensions() const;
-
             double *getDimPointer() const;
 
             // Functions

@@ -13,7 +13,7 @@ using namespace std;
 namespace Clustering {
 
     class DimensionalityMismatchEx {
-
+        static const int EX_ON;
     private:
         string name;
         string errMessage;

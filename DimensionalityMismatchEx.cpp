@@ -9,6 +9,7 @@ using namespace std;
 
 namespace Clustering {
 
+    const int DimensionalityMismatchEx::EX_ON = 0;
     // Constructors
     DimensionalityMismatchEx::DimensionalityMismatchEx(string name) {
         this->clearMembers();
@@ -43,14 +44,16 @@ namespace Clustering {
     }
 
     ostream &operator<<(ostream & os, DimensionalityMismatchEx & dimErr) {
-        os.width(4);
-        os << dimErr.getLine() << ": ";
-        os.width(65);
-        os.setf(ios::left, ios::adjustfield);
-        os << dimErr.getName() << "  ";
-        os.setf(ios::right, ios::adjustfield);
-        os << dimErr.getErr() << "\n";
-        os.flush();
+        if (DimensionalityMismatchEx::EX_ON) {
+            os.width(4);
+            os << dimErr.getLine() << ": ";
+            os.width(65);
+            os.setf(ios::left, ios::adjustfield);
+            os << dimErr.getName() << "  ";
+            os.setf(ios::right, ios::adjustfield);
+            os << dimErr.getErr() << "\n";
+            os.flush();
+        }
+        return os;
     }
 }
-#include "DimensionalityMismatchEx.h"
