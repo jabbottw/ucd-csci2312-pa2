@@ -675,8 +675,8 @@ Below are a few samople outputs from the k-means algorithm. Graphics were create
 300 3-dimensional points evaluated with k = 4
 ![alt tag](https://github.com/jabbottw/ucd-csci2312-pa2/blob/master/kmeans_results/300_points_4_clusters.png)
 
-Compiler information:
-
+Compiler
+GNU C++ compiler
 ```
 g++ -Wall pa1.cpp Point.cpp -o pa1
 ```
