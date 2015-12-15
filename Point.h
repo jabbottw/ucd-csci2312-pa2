@@ -1,75 +1,61 @@
-// A n-dimensional point class!
-// Coordinates are double-precision floating point.
 #ifndef CLUSTERING_POINT_H
 #define CLUSTERING_POINT_H
 
-
-using namespace std;
+#include <iostream>
 
 namespace Clustering {
 
     class Point {
+        int dim;        // number of dimensions of the point
+        double *values; // values of the point's dimensions
 
+    public:
         static const char POINT_VALUE_DELIM;
-        static const int DEBUGG;
-        static const int BASE_INDEX;
 
-        private:
-            int dimSize;
-            double *dimValues;
+        Point(int);
+        Point(int, double *);
 
-        public:
-            // Constructors
-            Point();
+        // Big three: cpy ctor, overloaded operator=, dtor
+        Point(const Point &);
+        Point &operator=(const Point &);
+        ~Point();
 
-            Point(int);
+        // Accessors & mutators
+        int getDims() const { return dim; }
+        void setValue(int, double);
+        double getValue(int) const;
 
-            Point(int, int);
+        // Functions
+        double distanceTo(const Point &) const;
 
-            Point(int, double *);
+        // Overloaded operators
 
-            Point(const Point &);               // Copy Constructor
-            Point &operator=(const Point &);    // Assignment Operator
-            ~Point();                           // Destructor
+        // Members
+        Point &operator*=(double);
+        Point &operator/=(double);
+        const Point operator*(double) const; // prevent (p1*2) = p2;
+        const Point operator/(double) const;
 
-            // Mutator methods
-            void setDimSize(double);
-            void setValue(int, double);
-            void setAllDimValues(double []);
+        // Note: 1-based index!
+        double &operator[](int index) { return values[index]; } // TODO out-of-bds?
 
+        // Friends
+        friend Point &operator+=(Point &, const Point &);
+        friend Point &operator-=(Point &, const Point &);
+        friend const Point operator+(const Point &, const Point &);
+        friend const Point operator-(const Point &, const Point &);
 
-            // Accessor methods
-            double getDims() const;
-            double getValue(int) const;
-            double *getAllDimensions() const;
+        friend bool operator==(const Point &, const Point &);
+        friend bool operator!=(const Point &, const Point &);
 
-            double *getDimPointer() const;
+        friend bool operator<(const Point &, const Point &);
+        friend bool operator>(const Point &, const Point &);
+        friend bool operator<=(const Point &, const Point &);
+        friend bool operator>=(const Point &, const Point &);
 
-            // Functions
-            double distanceTo(const Point &) const;
-
-            // Overloaded operators
-
-            // Members
-            Point &operator*=(double);
-            Point &operator/=(double);
-            const Point operator*(double) const;
-            const Point operator/(double) const;
-            double &operator[](int index);
-
-            // Friends
-            friend Point &operator+=(Point &, const Point &);
-            friend Point &operator-=(Point &, const Point &);
-            friend const Point operator+(const Point &, const Point &);
-            friend const Point operator-(const Point &, const Point &);
-            friend bool operator==(const Point &, const Point &);
-            friend bool operator!=(const Point &, const Point &);
-            friend bool operator<(const Point &, const Point &);
-            friend bool operator>(const Point &, const Point &);
-            friend bool operator<=(const Point &, const Point &);
-            friend bool operator>=(const Point &, const Point &);
-            friend std::ostream &operator<<(ostream &, const Point &);
-            friend std::istream &operator>>(std::istream &, Point &);
+        friend std::ostream &operator<<(std::ostream &, const Point &);
+        friend std::istream &operator>>(std::istream &, Point &);
     };
+
 }
-#endif // CLUSTERING_POINT_H
+#endif //CLUSTERING_POINT_H
